@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dollhouse — Y2K Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Chicle&family=Pixelify+Sans:wght@400;500;600&family=Quicksand:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+/* =====================================================
+   Y2K MAXIMALISM — DESIGN TOKENS
+   ===================================================== */
+:root{
+  /* --- 색상: 본체 핑크 계열 --- */
+  --pink-hot:      #ff5fb0;   /* CTA / 강조 / 가격표 */
+  --pink-bubble:   #ff84c6;   /* 버튼 호버 / 보조강조 */
+  --pink-soft:     #ffb8de;   /* 카드 헤더 / 보더 */
+  --pink-pale:     #ffe1f1;   /* 패널 배경 */
+  --pink-mist:     #fff2f9;   /* 페이지 배경 베이스 */
+
+  /* --- 색상: 라벤더 / 블루 계열 --- */
+  --violet:        #b88cf0;   /* 보조 강조 / 아이콘 */
+  --lavender:      #d4bdf7;   /* 카드 / 태그 */
+  --peri:          #9db0f2;   /* 링크 / 라인 */
+  --sky:           #aed6f7;   /* 하늘 패널 */
+  --sky-pale:      #d8ecfb;   /* 하늘 그라데 상단 */
+
+  /* --- 색상: 액센트 --- */
+  --mint:          #a3e8cf;   /* 성공 / 포인트 */
+  --lemon:         #ffe072;   /* 스마일 / 강조닷 */
+  --note:          #fff4b8;   /* 스티키노트 */
+
+  /* --- 색상: 뉴트럴 / 시스템 --- */
+  --ink:           #3a2c52;   /* 본문 텍스트 (보라끼 도는 먹) */
+  --ink-soft:      #6b5b87;   /* 보조 텍스트 */
+  --white:         #ffffff;
+  --chrome:        #c9bfe4;   /* 윈도우 타이틀바 */
+  --chrome-edge:   #9d8fc4;   /* 윈도우 음영 보더 */
+
+  /* --- 그라데이션 --- */
+  --holo: linear-gradient(100deg,#ffb8de 0%,#d4bdf7 32%,#aed6f7 64%,#a3e8cf 100%);
+  --holo-soft: linear-gradient(120deg,#ffe1f1,#e8d8fb,#d8ecfb,#d4f5e8);
+  --sky-grad: linear-gradient(180deg,#d8ecfb 0%,#aed6f7 55%,#c9e8f5 100%);
+  --gloss: linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 45%);
+
+  /* --- 보더 / 라운드 --- */
+  --bd:        2px solid var(--ink);
+  --bd-soft:   2px solid var(--pink-soft);
+  --r-window:  0px;   /* 윈도우 패널 */
+  --r-card:    0px;   /* 일반 카드 */
+  --r-pill:    0px;   /* 버튼/태그 */
+  --r-input:   0px;
+
+  /* --- 그림자 (스티커 느낌) --- */
+  --sh-sticker: 3px 4px 0 rgba(58,44,82,.18);
+  --sh-soft:    0 6px 16px rgba(184,140,240,.28);
+  --sh-pop:     4px 5px 0 var(--ink);
+
+  /* --- 타이포 --- */
+  --f-display: "Bagel Fat One", system-ui;  /* 거대 헤드라인 (버블) */
+  --f-logo:    "Chicle", cursive;            /* 로고 / 그루비 */
+  --f-pixel:   "Pixelify Sans", monospace;   /* UI 칩 / 윈도우 라벨 */
+  --f-mono:    "VT323", monospace;           /* 플레이리스트 / 숫자 */
+  --f-body:    "Quicksand", sans-serif;      /* 본문 */
+}
+
+/* ===================== BASE ===================== */
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--f-body);
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 12% 8%, #ffe1f1 0%, transparent 40%),
+    radial-gradient(circle at 88% 22%, #d8ecfb 0%, transparent 42%),
+    radial-gradient(circle at 50% 100%, #d4f5e8 0%, transparent 50%),
+    var(--pink-mist);
+  background-attachment:fixed;
+  line-height:1.5;
+  padding:0 0 80px;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+
+/* 반짝이 데코 (재사용) */
+.spark{position:absolute;pointer-events:none;font-family:var(--f-body);opacity:.9}
+
+/* ===================== HERO ===================== */
+.hero{
+  text-align:center;
+  padding:64px 22px 40px;
+  position:relative;
+  overflow:hidden;
+}
+.hero .kicker{
+  font-family:var(--f-pixel);
+  font-size:14px;letter-spacing:1px;
+  background:var(--white);
+  border:var(--bd);
+  border-radius:var(--r-pill);
+  padding:6px 18px;
+  display:inline-block;
+  box-shadow:var(--sh-sticker);
+  margin-bottom:22px;
+}
+.hero h1{
+  font-family:var(--f-logo);
+  font-size:clamp(48px,9vw,104px);
+  line-height:.95;
+  background:linear-gradient(180deg,#ff84c6,#b88cf0 55%,#9db0f2);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  -webkit-text-stroke:2px var(--white);
+  filter:drop-shadow(3px 4px 0 var(--ink));
+  margin-bottom:8px;
+}
+.hero .sub{
+  font-family:var(--f-display);
+  font-size:clamp(20px,3.4vw,34px);
+  color:var(--ink);
+  letter-spacing:.5px;
+}
+.hero p.tag{margin-top:14px;color:var(--ink-soft);font-weight:600}
+
+/* ===================== SECTION FRAME (Window) ===================== */
+.section{margin:42px 0}
+.window{
+  background:var(--white);
+  border:var(--bd);
+  border-radius:var(--r-window);
+  box-shadow:var(--sh-pop);
+  overflow:hidden;
+}
+.titlebar{
+  display:flex;align-items:center;gap:8px;
+  background:linear-gradient(180deg,#e0d6f5,var(--chrome));
+  border-bottom:var(--bd);
+  padding:8px 12px;
+}
+.titlebar .dot{width:14px;height:14px;border:1.5px solid var(--ink);border-radius:50%}
+.titlebar .t-name{font-family:var(--f-pixel);font-weight:600;font-size:15px;flex:1}
+.titlebar .controls{display:flex;gap:5px}
+.titlebar .ctrl{
+  width:20px;height:18px;border:1.5px solid var(--ink);
+  background:var(--white);border-radius:0;
+  font-family:var(--f-pixel);font-size:12px;
+  display:grid;place-items:center;line-height:1;
+}
+.body-pad{padding:26px}
+
+/* 섹션 타이틀 */
+.sec-label{
+  font-family:var(--f-display);
+  font-size:26px;margin-bottom:4px;
+  display:flex;align-items:center;gap:10px;
+}
+.sec-desc{color:var(--ink-soft);font-weight:600;margin-bottom:22px;font-size:14px}
+
+/* ===================== COLOR SWATCHES ===================== */
+.swatch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.swatch{
+  border:var(--bd);border-radius:var(--r-card);
+  overflow:hidden;box-shadow:var(--sh-sticker);
+  background:var(--white);
+}
+.swatch .chip{height:78px;position:relative}
+.swatch .chip::after{content:"";position:absolute;inset:0;background:var(--gloss)}
+.swatch .meta{padding:9px 11px}
+.swatch .name{font-weight:700;font-size:13px}
+.swatch .hex{font-family:var(--f-mono);font-size:18px;color:var(--ink-soft);line-height:1}
+.swatch .var{font-family:var(--f-pixel);font-size:11px;color:var(--peri)}
+
+.grad-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px}
+.grad{
+  height:96px;border:var(--bd);border-radius:var(--r-card);
+  box-shadow:var(--sh-sticker);position:relative;
+  display:flex;align-items:flex-end;padding:10px;
+}
+.grad span{font-family:var(--f-pixel);font-size:12px;background:var(--white);
+  border:1.5px solid var(--ink);border-radius:var(--r-pill);padding:3px 10px}
+
+/* ===================== TYPOGRAPHY ===================== */
+.type-row{
+  border-bottom:1.5px dashed var(--pink-soft);
+  padding:16px 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:12px;
+}
+.type-row:last-child{border:none}
+.type-tag{
+  font-family:var(--f-pixel);font-size:11px;
+  background:var(--lavender);border:1.5px solid var(--ink);
+  border-radius:var(--r-pill);padding:3px 10px;white-space:nowrap;
+}
+.t-display{font-family:var(--f-display);font-size:40px;line-height:1}
+.t-logo{font-family:var(--f-logo);font-size:42px;color:var(--violet);-webkit-text-stroke:1.5px var(--white);}
+.t-pixel{font-family:var(--f-pixel);font-size:26px}
+.t-mono{font-family:var(--f-mono);font-size:30px}
+.t-body{font-family:var(--f-body);font-size:18px;font-weight:600}
+.type-row .note{font-size:12px;color:var(--ink-soft);flex-basis:100%}
+
+/* ===================== BUTTONS ===================== */
+.demo-flow{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.btn{
+  font-family:var(--f-body);font-weight:700;font-size:15px;
+  border:var(--bd);border-radius:var(--r-pill);
+  padding:11px 26px;cursor:pointer;color:var(--ink);
+  position:relative;transition:transform .12s, box-shadow .12s;
+  box-shadow:var(--sh-sticker);
+}
+.btn::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--gloss);pointer-events:none}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(58,44,82,.22)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 rgba(58,44,82,.22)}
+.btn-primary{background:var(--pink-hot);color:var(--white);-webkit-text-stroke:.4px var(--ink)}
+.btn-secondary{background:var(--white)}
+.btn-violet{background:var(--violet);color:var(--white)}
+.btn-mint{background:var(--mint)}
+.btn-ghost{background:transparent;box-shadow:none;text-decoration:underline;text-decoration-style:wavy;text-decoration-color:var(--peri);border:none;padding:11px 8px}
+
+/* ===================== TAGS / BADGES ===================== */
+.tag{
+  font-family:var(--f-pixel);font-size:13px;
+  border:1.5px solid var(--ink);border-radius:var(--r-pill);
+  padding:5px 14px;display:inline-flex;gap:5px;align-items:center;
+  box-shadow:2px 2px 0 rgba(58,44,82,.15);
+}
+
+/* ===================== INPUT + MUSIC ETC (components) ===================== */
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+
+/* 검색 인풋 */
+.field{display:flex;border:var(--bd);border-radius:var(--r-pill);overflow:hidden;background:var(--white);box-shadow:var(--sh-sticker)}
+.field input{flex:1;border:none;outline:none;padding:11px 16px;font-family:var(--f-body);font-size:14px;background:transparent;color:var(--ink)}
+.field input::placeholder{color:var(--peri)}
+.field button{border:none;border-left:var(--bd);background:var(--pink-hot);color:#fff;padding:0 18px;cursor:pointer;font-size:16px}
+
+/* 카드(상품) */
+.card{
+  border:var(--bd);border-radius:var(--r-card);background:var(--white);
+  box-shadow:var(--sh-sticker);overflow:hidden;
+}
+.card .ph{height:120px;background:var(--holo);border-bottom:var(--bd);position:relative;display:grid;place-items:center;font-size:38px}
+.card .ph::after{content:"";position:absolute;inset:0;background:var(--gloss)}
+.card .info{padding:12px 14px}
+.card .info h4{font-family:var(--f-body);font-weight:700;font-size:15px}
+.card .info .price{font-family:var(--f-mono);font-size:24px;color:var(--pink-hot);line-height:1}
+.card .info .mini-btn{margin-top:10px;width:100%;background:var(--pink-soft);border:1.5px solid var(--ink);border-radius:var(--r-pill);padding:7px;font-family:var(--f-body);font-weight:700;font-size:13px;cursor:pointer}
+
+/* 스티키 노트 */
+.sticky{
+  background:var(--note);border:var(--bd);border-radius:0;
+  padding:16px 18px;box-shadow:var(--sh-sticker);
+  transform:rotate(-2deg);font-weight:600;
+}
+.sticky h4{font-family:var(--f-pixel);margin-bottom:8px;font-size:15px}
+.sticky ul{list-style:none;font-size:14px}
+.sticky li::before{content:"♡ ";color:var(--pink-hot)}
+
+/* 뮤직 플레이어 / 플레이리스트 */
+.player{border:var(--bd);border-radius:var(--r-window);overflow:hidden;background:var(--white);box-shadow:var(--sh-sticker)}
+.player .bar{background:linear-gradient(180deg,#ffd0e8,var(--pink-soft));border-bottom:var(--bd);padding:7px 12px;font-family:var(--f-pixel);font-size:14px;display:flex;justify-content:space-between}
+.player .pl{font-family:var(--f-mono);font-size:19px}
+.player .pl li{display:flex;justify-content:space-between;padding:5px 12px;border-bottom:1px dashed var(--pink-soft)}
+.player .pl li.active{background:var(--lavender)}
+.player .pl li:last-child{border:none}
+
+/* 알림 / 메시지 윈도우 */
+.msg{border:var(--bd);border-radius:var(--r-window);background:var(--white);box-shadow:var(--sh-sticker);overflow:hidden}
+.msg .bar{background:linear-gradient(180deg,#d8ecfb,var(--sky));border-bottom:var(--bd);padding:7px 12px;font-family:var(--f-pixel);font-size:14px}
+.msg .c{padding:16px;text-align:center}
+.msg .c .ico{font-size:30px}
+
+/* ===================== EFFECTS ===================== */
+.fx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.fx{border:var(--bd);border-radius:var(--r-card);background:var(--white);padding:18px;box-shadow:var(--sh-sticker)}
+.fx h4{font-family:var(--f-pixel);font-size:14px;margin-bottom:12px}
+.fx .demo{height:70px;border-radius:0;display:grid;place-items:center;font-weight:700;margin-bottom:10px}
+.fx code{font-family:var(--f-mono);font-size:16px;color:var(--ink-soft);display:block;line-height:1.2;word-break:break-all}
+.d-holo{background:var(--holo);color:#fff;-webkit-text-stroke:.5px var(--ink)}
+.d-sticker{background:var(--lemon);border:var(--bd);box-shadow:var(--sh-sticker)}
+.d-gloss{background:var(--violet);color:#fff;position:relative;overflow:hidden}
+.d-gloss::after{content:"";position:absolute;inset:0;background:var(--gloss)}
+.d-check{
+  background-image:
+    linear-gradient(45deg,var(--ink) 25%,transparent 25%,transparent 75%,var(--ink) 75%),
+    linear-gradient(45deg,var(--ink) 25%,var(--pink-soft) 25%,var(--pink-soft) 75%,var(--ink) 75%);
+  background-size:20px 20px;background-position:0 0,10px 10px;
+}
+
+/* 체커 띠 (배너) */
+.checker-band{
+  height:34px;border:var(--bd);border-radius:var(--r-pill);
+  background:var(--holo);display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-pixel);gap:18px;font-size:14px;
+  box-shadow:var(--sh-sticker);position:relative;overflow:hidden;
+}
+.checker-band::before,.checker-band::after{
+  content:"";position:absolute;top:0;bottom:0;width:60px;
+  background-image:linear-gradient(45deg,var(--ink) 25%,transparent 25%,transparent 75%,var(--ink) 75%),linear-gradient(45deg,var(--ink) 25%,#fff 25%,#fff 75%,var(--ink) 75%);
+  background-size:16px 16px;background-position:0 0,8px 8px;
+}
+.checker-band::before{left:0}.checker-band::after{right:0}
+
+/* ===================== TASKBAR (footer) ===================== */
+.taskbar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:linear-gradient(180deg,#e0d6f5,var(--chrome));
+  border-top:var(--bd);
+  display:flex;align-items:center;gap:10px;padding:6px 12px;
+  font-family:var(--f-pixel);font-size:14px;z-index:50;
+}
+.taskbar .start{
+  background:var(--pink-hot);color:#fff;border:var(--bd);
+  border-radius:0;padding:5px 16px;font-family:var(--f-pixel);
+  box-shadow:2px 2px 0 rgba(58,44,82,.25);display:flex;gap:6px;align-items:center;
+}
+.taskbar .tb-item{background:var(--white);border:1.5px solid var(--ink);border-radius:0;padding:4px 12px}
+.taskbar .clock{margin-left:auto;background:var(--white);border:1.5px solid var(--ink);border-radius:0;padding:4px 12px}
+
+/* 사용규칙 박스 */
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.rule{border:var(--bd);border-radius:var(--r-card);padding:14px 16px;background:var(--white);box-shadow:var(--sh-sticker);font-size:14px;font-weight:600}
+.rule.do{background:#eafaf2}.rule.dont{background:#ffeef4}
+.rule b{font-family:var(--f-pixel);display:block;margin-bottom:6px;font-size:15px}
+@media(max-width:620px){.rules{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <span class="spark" style="top:30px;left:14%;font-size:26px">✦</span>
+  <span class="spark" style="top:80px;right:12%;font-size:34px">★</span>
+  <span class="spark" style="bottom:20px;left:24%;font-size:22px">♡</span>
+  <span class="spark" style="top:120px;left:46%;font-size:18px">✦</span>
+  <div class="kicker">✿ visual design system v1.0 ✿</div>
+  <h1>dollhouse</h1>
+  <div class="sub">Y2K Maximalism Kit</div>
+  <p class="tag">파스텔 홀로그래픽 · 윈도우 98 UI · 스티커 콜라주 · 픽셀 + 버블 타이포</p>
+</header>
+
+<div class="wrap">
+
+  <!-- ============ COLORS ============ -->
+  <section class="section">
+    <div class="window">
+      <div class="titlebar">
+        <span class="dot" style="background:#ff84c6"></span>
+        <span class="t-name">colors.swatch</span>
+        <div class="controls"><span class="ctrl">_</span><span class="ctrl">□</span><span class="ctrl">×</span></div>
+      </div>
+      <div class="body-pad">
+        <div class="sec-label">🎨 컬러 팔레트</div>
+        <p class="sec-desc">핑크가 주인공, 라벤더·블루가 받쳐주고, 민트·레몬은 포인트. 텍스트는 순검정 대신 보라끼 도는 먹색(#3a2c52).</p>
+        <div class="swatch-grid">
+          <div class="swatch"><div class="chip" style="background:#ff5fb0"></div><div class="meta"><div class="name">Hot Pink</div><div class="hex">#ff5fb0</div><div class="var">--pink-hot</div></div></div>
+          <div class="swatch"><div class="chip" style="background:#ff84c6"></div><div class="meta"><div class="name">Bubblegum</div><div class="hex">#ff84c6</div><div class="var">--pink-bubble</div></div></div>
+          <div class="swatch"><div class="chip" style="background:#ffb8de"></div><div class="meta"><div class="name">Soft Pink</div><div class="hex">#ffb8de</div><div class="var">--pink-soft</div></div></div>
+          <div class="swatch"><div class="chip" style="background:#ffe1f1"></div><div class="meta"><div class="name">Pale Pink</div><div class="hex">#ffe1f1</div><div class="var">--pink-pale</div></div></div>
+          <div class="swatch"><div class="chip" style="background:#b88cf0"></div><div class="meta"><div class="name">Violet</div><div class="hex">#b88cf0</div><div class="var">--violet</div></div></div>
+          <div class="swatch"><div class="chip" style="background:#d4bdf7"></div><div class="meta"><div class="name">Lavender</div><div class="hex">#d4bdf7</div><div class="var">--lavender</div></div></div>
+          <div class="swatch"><div class="chip" style="background:#9db0f2"></div><div class="meta"><div class="name">Periwinkle</div><div class="hex">#9db0f2</div><div class="var">--peri</div></div></div>
+          <div class="swatch"><div class="chip" style="background:#aed6f7"></div><div class="meta"><div class="name">Baby Blue</div><div class="hex">#aed6f7</div><div class="var">--sky</div></div></div>
+          <div class="swatch"><div class="chip" style="background:#a3e8cf"></div><div class="meta"><div class="name">Mint</div><div class="hex">#a3e8cf</div><div class="var">--mint</div></div></div>
+          <div class="swatch"><div class="chip" style="background:#ffe072"></div><div class="meta"><div class="name">Lemon</div><div class="hex">#ffe072</div><div class="var">--lemon</div></div></div>
+          <div class="swatch"><div class="chip" style="background:#fff4b8"></div><div class="meta"><div class="name">Note</div><div class="hex">#fff4b8</div><div class="var">--note</div></div></div>
+          <div class="swatch"><div class="chip" style="background:#3a2c52"></div><div class="meta"><div class="name">Ink</div><div class="hex">#3a2c52</div><div class="var">--ink</div></div></div>
+        </div>
+
+        <div class="grad-grid">
+          <div class="grad" style="background:var(--holo)"><span>--holo · 홀로그래픽 띠</span></div>
+          <div class="grad" style="background:var(--holo-soft)"><span>--holo-soft · 부드러운 배경</span></div>
+          <div class="grad" style="background:var(--sky-grad)"><span>--sky-grad · 하늘 패널</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TYPOGRAPHY ============ -->
+  <section class="section">
+    <div class="window">
+      <div class="titlebar">
+        <span class="dot" style="background:#b88cf0"></span>
+        <span class="t-name">type.system</span>
+        <div class="controls"><span class="ctrl">_</span><span class="ctrl">□</span><span class="ctrl">×</span></div>
+      </div>
+      <div class="body-pad">
+        <div class="sec-label">🔤 타이포그래피</div>
+        <p class="sec-desc">버블(헤드라인) + 그루비(로고) + 픽셀(UI) + 모노(숫자) + 라운드 산세리프(본문). 본문은 거의 소문자로.</p>
+
+        <div class="type-row">
+          <span class="type-tag">DISPLAY</span>
+          <span class="t-display">made 4 the internet</span>
+          <span class="note">Bagel Fat One — 거대 버블 헤드라인. 그라데 채움 + 흰 스트로크 + 먹색 드롭섀도우.</span>
+        </div>
+        <div class="type-row">
+          <span class="type-tag">LOGO</span>
+          <span class="t-logo">dollhouse</span>
+          <span class="note">Chicle — 로고 / 그루비 워드마크. 굵고 통통한 레트로 스크립트.</span>
+        </div>
+        <div class="type-row">
+          <span class="type-tag">PIXEL UI</span>
+          <span class="t-pixel">quick links · new message</span>
+          <span class="note">Pixelify Sans — 윈도우 타이틀바, 칩, 라벨, 네비.</span>
+        </div>
+        <div class="type-row">
+          <span class="type-tag">MONO</span>
+          <span class="t-mono">$36.00 · 02:31 · vida digital</span>
+          <span class="note">VT323 — 가격, 재생시간, 플레이리스트 같은 숫자/리스트.</span>
+        </div>
+        <div class="type-row">
+          <span class="type-tag">BODY</span>
+          <span class="t-body">y2k fashion, digital dreams, and good vibes only.</span>
+          <span class="note">Quicksand 600 — 본문. 둥글둥글하고 친근하게, 대부분 소문자.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BUTTONS & TAGS ============ -->
+  <section class="section">
+    <div class="window">
+      <div class="titlebar">
+        <span class="dot" style="background:#a3e8cf"></span>
+        <span class="t-name">buttons.exe</span>
+        <div class="controls"><span class="ctrl">_</span><span class="ctrl">□</span><span class="ctrl">×</span></div>
+      </div>
+      <div class="body-pad">
+        <div class="sec-label">🔘 버튼 &amp; 태그</div>
+        <p class="sec-desc">전부 알약 모양 + 먹색 2px 보더 + 스티커 그림자. 위에 광택(gloss) 오버레이. 호버 시 살짝 떠오르고 클릭 시 눌림.</p>
+        <div class="demo-flow" style="margin-bottom:20px">
+          <button class="btn btn-primary">shop the collection</button>
+          <button class="btn btn-secondary">about us</button>
+          <button class="btn btn-violet">join now</button>
+          <button class="btn btn-mint">add to cart</button>
+          <button class="btn btn-ghost">view all →</button>
+        </div>
+        <div class="demo-flow">
+          <span class="tag">★ new drop</span>
+          <span class="tag" style="background:var(--lavender)">♡ best seller</span>
+          <span class="tag" style="background:var(--mint)">✿ in stock</span>
+          <span class="tag" style="background:var(--lemon)">⚡ sale</span>
+          <span class="tag" style="background:var(--sky)">✦ trending</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMPONENTS ============ -->
+  <section class="section">
+    <div class="window">
+      <div class="titlebar">
+        <span class="dot" style="background:#ffe072"></span>
+        <span class="t-name">components.dll</span>
+        <div class="controls"><span class="ctrl">_</span><span class="ctrl">□</span><span class="ctrl">×</span></div>
+      </div>
+      <div class="body-pad">
+        <div class="sec-label">🧩 컴포넌트</div>
+        <p class="sec-desc">모든 패널은 "윈도우" 메타포 — 타이틀바 + _ □ × 컨트롤. 검색, 상품카드, 스티키노트, 뮤직플레이어, 알림창.</p>
+        <div class="comp-grid">
+
+          <div>
+            <div class="field" style="margin-bottom:16px">
+              <input placeholder="search the site...">
+              <button>🔍</button>
+            </div>
+            <div class="sticky">
+              <h4>📌 don't forget</h4>
+              <ul><li>drink water</li><li>be kind</li><li>call ur bff</li></ul>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="ph">👜</div>
+            <div class="info">
+              <h4>starlet bag</h4>
+              <div class="price">$36.00</div>
+              <button class="mini-btn">add to cart</button>
+            </div>
+          </div>
+
+          <div class="player">
+            <div class="bar"><span>♫ now playing</span><span>_ □ ×</span></div>
+            <ul class="pl">
+              <li><span>01 in my bag</span><span>2:31</span></li>
+              <li class="active"><span>02 vida digital</span><span>3:12</span></li>
+              <li><span>03 internet angel</span><span>2:45</span></li>
+              <li><span>04 cyber crush</span><span>3:33</span></li>
+            </ul>
+          </div>
+
+          <div class="msg">
+            <div class="bar">💌 new message! _ □ ×</div>
+            <div class="c">
+              <div class="ico">💗</div>
+              <p style="font-weight:700;margin:6px 0">you have (1) new message</p>
+              <button class="btn btn-primary" style="padding:7px 24px;font-size:13px">ok</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EFFECTS ============ -->
+  <section class="section">
+    <div class="window">
+      <div class="titlebar">
+        <span class="dot" style="background:#9db0f2"></span>
+        <span class="t-name">effects.fx</span>
+        <div class="controls"><span class="ctrl">_</span><span class="ctrl">□</span><span class="ctrl">×</span></div>
+      </div>
+      <div class="body-pad">
+        <div class="sec-label">✨ 시그니처 효과</div>
+        <p class="sec-desc">이 다섯 가지가 "Y2K 느낌"을 만드는 핵심. 어디에 써도 분위기가 살아납니다.</p>
+        <div class="fx-grid">
+          <div class="fx"><h4>홀로그래픽</h4><div class="demo d-holo">hologram</div><code>--holo<br>linear-gradient</code></div>
+          <div class="fx"><h4>스티커 섀도우</h4><div class="demo d-sticker">sticker</div><code>3px 4px 0<br>+ 흰 아웃라인</code></div>
+          <div class="fx"><h4>광택 오버레이</h4><div class="demo d-gloss">gloss</div><code>--gloss<br>top white fade</code></div>
+          <div class="fx"><h4>체커보드</h4><div class="demo d-check"></div><code>conic/linear<br>checker pattern</code></div>
+          <div class="fx"><h4>반짝이 데코</h4><div class="demo" style="background:var(--holo-soft);font-size:24px">✦ ★ ♡ ✿ ✧</div><code>흩뿌린<br>star/heart 글리프</code></div>
+        </div>
+
+        <div style="margin-top:20px;display:flex;flex-direction:column;gap:12px">
+          <div class="checker-band">free gifts over $75 ★ new drop every friday ♡ stay y2k</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ USAGE RULES ============ -->
+  <section class="section">
+    <div class="window">
+      <div class="titlebar">
+        <span class="dot" style="background:#ff5fb0"></span>
+        <span class="t-name">readme.txt</span>
+        <div class="controls"><span class="ctrl">_</span><span class="ctrl">□</span><span class="ctrl">×</span></div>
+      </div>
+      <div class="body-pad">
+        <div class="sec-label">📐 사용 규칙</div>
+        <p class="sec-desc">맥시멀리즘이라도 규칙이 있어야 산만해지지 않습니다.</p>
+        <div class="rules">
+          <div class="rule do"><b>✓ DO</b>모든 박스를 "창(window)"처럼 — 타이틀바 + 2px 먹색 보더 + 스티커 그림자로 통일.</div>
+          <div class="rule do"><b>✓ DO</b>핑크를 70%, 라벤더/블루 25%, 민트·레몬은 5% 포인트로만.</div>
+          <div class="rule do"><b>✓ DO</b>본문은 소문자, 헤드라인만 버블 폰트로 크게 — 위계를 폰트로 만든다.</div>
+          <div class="rule do"><b>✓ DO</b>여백마다 ✦★♡ 글리프를 흩뿌려 콜라주 밀도를 채운다.</div>
+          <div class="rule dont"><b>✕ DON'T</b>순검정(#000)·순회색 쓰지 않기 — 항상 보라끼 먹색/파스텔로.</div>
+          <div class="rule dont"><b>✕ DON'T</b>모든 요소에 다른 폰트 쓰지 않기 — 5종 안에서만 돌려쓰기.</div>
+          <div class="rule dont"><b>✕ DON'T</b>둥근 모서리(border-radius) 쓰지 않기 — 모든 요소는 직각. 날카롭고 단단한 엣지가 이 시스템의 규칙.</div>
+          <div class="rule dont"><b>✕ DON'T</b>그림자를 흐릿하게 흩지 말기 — 단단한 오프셋(0 blur)으로 스티커처럼.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ TASKBAR ============ -->
+<div class="taskbar">
+  <span class="start">⊞ start</span>
+  <span class="tb-item">🌐 dollhouse.html</span>
+  <span class="tb-item">💌 new message (1)</span>
+  <span class="clock">🔊 ♡ 10:30 PM</span>
+</div>
+
+</body>
+</html>

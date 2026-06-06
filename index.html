@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sua's Girls Night Party</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── MODAL ───────────────────────────── -->
+<div id="nicknameModal" class="modal-overlay">
+  <div class="modal-window">
+    <div class="rw-head pink">
+      <div class="rw-title"><span class="msym" style="font-size:14px">favorite</span> welcome.exe</div>
+      <div class="rw-controls"><div class="wbtn"></div><div class="wbtn x">x</div></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title holo-text">✦ welcome ✦</div>
+      <p>수아의 핑크 에라에 오신 걸 환영해요!<br>닉네임을 입력해줘 💋</p>
+      <input id="nicknameInput" class="modal-input" type="text" placeholder="닉네임 입력..." maxlength="10">
+      <button class="modal-btn" onclick="saveNickname()">입장하기 💖</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── BROWSER CHROME ───────────────────── -->
+<div class="bc">
+  <div class="bc-l">
+    <div class="bc-dots">
+      <span class="bc-dot r"></span>
+      <span class="bc-dot y"></span>
+      <span class="bc-dot g"></span>
+    </div>
+    <span class="bc-ttl">Sua's Girls Night Party</span>
+  </div>
+  <div class="bc-ctrls">
+    <span class="bc-ctrl">_</span>
+    <span class="bc-ctrl">□</span>
+    <span class="bc-ctrl">×</span>
+  </div>
+</div>
+
+<!-- ── NAVBAR ───────────────────────────── -->
+<nav class="navbar">
+  <div class="nav-logo">🎀 sua</div>
+  <div class="nav-links">
+    <a class="nav-link active" href="#">Home</a>
+    <a class="nav-link" href="#wishlist">Wishlist</a>
+    <a class="nav-link" href="#whoisin">Who's In?</a>
+    <a class="nav-link" href="#lookbook">Look Book</a>
+    <a class="nav-link" href="#xoxo">XOXO</a>
+    <a class="nav-link" href="#photodump">Photo Dump</a>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────── -->
+<section class="hero-section">
+  <div class="wrap" style="position:relative">
+    <!-- decorative stickers -->
+    <span class="sticker" style="top:10px;left:38%;font-size:20px;animation-delay:.3s">✦</span>
+    <span class="sticker" style="top:20px;right:2%;font-size:26px;animation-delay:.8s">★</span>
+    <span class="sticker" style="top:80px;left:1%;font-size:18px;animation-delay:1.5s">♡</span>
+
+    <div class="hero-grid">
+
+      <!-- 1. welcome sticky -->
+      <div class="welcome-box">
+        <h3>don't forget 📌</h3>
+        <p>와줘서 진심으로 고마워! 수아의 핑크 에라를 같이 축하해줘서 넘 행복해 🩷<br><br>공지 확인하고 찜도 하고 한마디 남겨줘!</p>
+        <span class="welcome-tag">✿ 06.29 YOU ARE INVITED ✿</span>
+      </div>
+
+      <!-- 2. title -->
+      <div class="hero-title">
+        <div class="hero-kicker">✿ 06.29 (MON) · GIRLS NIGHT PARTY ✿</div>
+        <h1 class="hero-h1 holo-text">Enter:<br>Sua's Pink Era</h1>
+        <div class="hero-sub">"On June 29th, we wear PINK!"</div>
+        <div id="nickDisplay" class="nick-display"></div>
+      </div>
+
+      <!-- 3. photo popup -->
+      <div class="photo-window rw">
+        <div class="rw-head blue">
+          <div class="rw-title"><span class="msym" style="font-size:14px">image</span> sua_photo.jpg</div>
+          <div class="rw-controls"><div class="wbtn"></div><div class="wbtn x">x</div></div>
+        </div>
+        <div class="photo-body">
+          <img id="heroPhoto" src="" alt="Sua" onerror="this.style.display='none';document.getElementById('photoPh').style.display='flex'">
+          <div id="photoPh" class="photo-ph" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+            <span class="msym" style="font-size:36px;color:#d5bffe">photo_camera</span>
+            <span>sua_photo.jpg<br>여기에 사진 삽입</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. player + sticky -->
+      <div class="right-widgets">
+        <div class="rw">
+          <div class="rw-head pink">
+            <div class="rw-title"><span class="msym" style="font-size:14px">music_note</span> now playing</div>
+            <div class="rw-controls"><div class="wbtn"></div><div class="wbtn"></div><div class="wbtn x">x</div></div>
+          </div>
+          <div class="player-body">
+            <div class="player-track">
+              <div class="player-album"><span class="msym" style="font-size:22px">album</span></div>
+              <div class="player-info"><strong id="nowPlayingTitle">pink friday</strong><br>party playlist</div>
+            </div>
+            <ul class="pl" id="playlist">
+              <li class="active" data-src="" onclick="playTrack(this,0)"><span>01 pink friday</span><span>3:22</span></li>
+              <li data-src="" onclick="playTrack(this,1)"><span>02 barbie girl</span><span>3:15</span></li>
+              <li data-src="" onclick="playTrack(this,2)"><span>03 levitating</span><span>3:23</span></li>
+              <li data-src="" onclick="playTrack(this,3)"><span>04 supernova</span><span>2:55</span></li>
+            </ul>
+            <div class="player-progress" style="margin-top:8px"><div class="player-bar" id="playerBar"></div></div>
+            <div class="player-ctrl-row">
+              <button class="pbtn" onclick="prevTrack()"><span class="msym" style="font-size:20px">skip_previous</span></button>
+              <button class="pbtn play" id="playBtn" onclick="togglePlay()"><span class="msym" style="font-size:22px">play_circle</span></button>
+              <button class="pbtn" onclick="nextTrack()"><span class="msym" style="font-size:20px">skip_next</span></button>
+            </div>
+            <audio id="bgAudio"></audio>
+          </div>
+        </div>
+        <div class="sticky-note">
+          <h4>don't forget</h4>
+          <ul>
+            <li><span class="msym" style="font-size:12px">star</span> drink water</li>
+            <li><span class="msym" style="font-size:12px">star</span> be kind</li>
+            <li><span class="msym" style="font-size:12px">star</span> more glitter</li>
+            <li><span class="msym" style="font-size:12px">star</span> less stress</li>
+            <li><span class="msym" style="font-size:12px">star</span> pretty girls wear pink</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── TIMER BAND ────────────────────────── -->
+<div class="timer-band" id="countdown">loading...</div>
+
+<!-- ── MAIN ──────────────────────────────── -->
+<main class="wrap">
+
+  <div id="configWarning" class="config-warning">
+    ⚙ SUPABASE 키 미설정 — SUPABASE_URL / SUPABASE_ANON_KEY 를 채워야 댓글·위시리스트가 동작해요.
+  </div>
+
+  <div class="content-grid">
+
+    <section class="rw" id="notice">
+      <div class="rw-head">
+        <div class="rw-title"><span class="msym" style="font-size:14px">info</span> notice.txt</div>
+        <div class="rw-controls"><div class="wbtn"></div><div class="wbtn x">x</div></div>
+      </div>
+      <div class="rw-body">
+        <ul class="notice-list">
+          <li class="notice-item"><span class="nl hot">일시</span><span class="nv">6월 29일 (월) 공식 시작 17:00<br><span style="font-size:11px;color:var(--on-surface-variant);font-weight:400">수아는 15:00부터 대기 완 🎀</span></span></li>
+          <li class="notice-item"><span class="nl hot">장소</span><span class="nv">서울 관악구 중앙로52길 14</span></li>
+          <li class="notice-item"><span class="nl">드코</span><span class="nv">Hot Pink &amp; Sparkle ✨<br><span style="font-size:11px;color:var(--on-surface-variant);font-weight:400">인간 바비가 되어 올 것</span></span></li>
+          <li class="notice-item"><span class="nl">미션</span><span class="nv">수아 장점 1줄 + 추억 1줄 지참</span></li>
+          <li class="notice-item"><span class="nl">스포</span><span class="nv">수아 퀴즈 1등 → 핑크 핫템 🎁</span></li>
+          <li class="notice-item"><span class="nl">매너</span><span class="nv">21:00 이후 고성방가 금지 🤫</span></li>
+        </ul>
+        <a href="https://map.naver.com/p/search/서울 관악구 중앙로52길 14" target="_blank" rel="noopener" class="map-btn">
+          <span class="msym" style="font-size:16px">map</span> 네이버 지도로 길 찾기
+        </a>
+      </div>
+    </section>
+
+    <section class="rw" id="wishlist">
+      <div class="rw-head note">
+        <div class="rw-title"><span class="msym" style="font-size:14px">shopping_bag</span> wishlist.dll</div>
+        <div class="rw-controls"><div class="wbtn"></div><div class="wbtn x">x</div></div>
+      </div>
+      <div class="rw-body">
+        <p class="wish-desc">찜하면 다른 친구 화면에도 실시간으로 표시돼서 선물 안 겹쳐요! (1인당 최대 3개 💖)</p>
+        <div id="wishGrid" class="wish-grid">
+          <div class="wish-empty">위시리스트 불러오는 중... ✦</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <section class="rw" style="margin-bottom:16px" id="xoxo">
+    <div class="rw-head">
+      <div class="rw-title"><span class="msym" style="font-size:14px">edit_document</span> comments.feed</div>
+      <div class="rw-controls"><div class="wbtn"></div><div class="wbtn x">x</div></div>
+    </div>
+    <div class="rw-body">
+      <form class="comment-form" onsubmit="handleCommentSubmit(event)">
+        <input id="commentInput" class="comment-input" type="text" placeholder="공지 확인 도장 쾅! 한마디 남기기 ✦" maxlength="200" required>
+        <button type="submit" class="comment-submit">등록</button>
+      </form>
+      <ul id="commentList" class="comment-list"></ul>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── TASKBAR ───────────────────────────── -->
+<div class="taskbar">
+  <div class="tb-start"><span class="msym" style="font-size:14px">apps</span> barbie.exe</div>
+  <div class="tb-div"></div>
+  <span class="tb-item" id="tbTimer">D-??</span>
+  <span class="tb-clock" id="tbClock">--:--</span>
+</div>
+
+<!-- ── SUPABASE + JS ─────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+</body>
+</html>

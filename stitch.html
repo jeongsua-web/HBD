@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sua's Girls Night</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;family=Work+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#d5bffe",
+                        "on-primary-fixed-variant": "#782956",
+                        "on-tertiary-fixed-variant": "#004e5e",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e2e2e2",
+                        "background": "#f9f9f9",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#001f27",
+                        "surface-tint": "#95406f",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#ffafd5",
+                        "outline": "#857279",
+                        "surface-container": "#eeeeee",
+                        "inverse-on-surface": "#f1f1f1",
+                        "on-secondary-fixed-variant": "#4f3d73",
+                        "surface-container-high": "#e8e8e8",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#ffd8e8",
+                        "on-secondary-fixed": "#220f44",
+                        "on-primary-container": "#7b2b59",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#1a1c1c",
+                        "tertiary": "#00677d",
+                        "on-tertiary-container": "#005162",
+                        "tertiary-container": "#77c4dc",
+                        "primary-container": "#ff99cc",
+                        "inverse-surface": "#2f3131",
+                        "inverse-primary": "#ffafd5",
+                        "on-surface": "#1a1c1c",
+                        "tertiary-fixed-dim": "#84d1ea",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f3f3f3",
+                        "secondary": "#67558c",
+                        "on-secondary-container": "#5d4b81",
+                        "surface-variant": "#e2e2e2",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#d2bcfb",
+                        "outline-variant": "#d7c1c9",
+                        "secondary-fixed": "#ebddff",
+                        "tertiary-fixed": "#b2ebff",
+                        "on-primary-fixed": "#3d0027",
+                        "surface-bright": "#f9f9f9",
+                        "primary": "#95406f",
+                        "surface": "#f9f9f9",
+                        "surface-dim": "#dadada",
+                        "on-surface-variant": "#524249"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "unit": "4px",
+                        "margin-desktop": "32px",
+                        "window-padding": "12px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Work Sans"],
+                        "headline-sm": ["Space Grotesk"],
+                        "label-pixel": ["Space Mono"],
+                        "button-text": ["Space Grotesk"],
+                        "headline-xl": ["Space Grotesk"],
+                        "headline-lg-mobile": ["Space Grotesk"],
+                        "headline-lg": ["Space Grotesk"],
+                        "body-lg": ["Work Sans"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "label-pixel": ["14px", { "lineHeight": "1.0", "fontWeight": "400" }],
+                        "button-text": ["16px", { "lineHeight": "1.0", "fontWeight": "700" }],
+                        "headline-xl": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-image: radial-gradient(#d7c1c9 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-color: #f9f9f9;
+        }
+        
+        .retro-window {
+            border: 2px solid #1a1c1c;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+            background-color: #ffffff;
+        }
+        
+        .retro-window-header {
+            border-bottom: 2px solid #1a1c1c;
+            background: linear-gradient(90deg, #d5bffe 0%, #ebddff 100%);
+        }
+        
+        .retro-button {
+            border: 2px solid #1a1c1c;
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+            transition: all 0.1s;
+        }
+        
+        .retro-button:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px rgba(0,0,0,0.1);
+        }
+        
+        .holographic-text {
+            background: linear-gradient(to right, #ff99cc, #77c4dc, #d5bffe, #ff99cc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: rainbow 5s ease-in-out infinite;
+            background-size: 400% 100%;
+        }
+
+        @keyframes rainbow {
+            0%, 100% { background-position: 0 0; }
+            50% { background-position: 100% 0; }
+        }
+        
+        .sticker {
+            filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.2));
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-background min-h-screen pb-20 overflow-x-hidden">
+<!-- Top Navigation Window (Browser Header Metaphor) -->
+<header class="flex justify-between items-center w-full px-4 h-12 bg-secondary-fixed border-b-2 border-on-background shadow-[4px_4px_0px_rgba(0,0,0,0.1)] fixed top-0 z-50">
+<div class="flex items-center gap-4">
+<span class="text-headline-sm font-headline-sm font-bold text-primary dark:text-primary-fixed">Sua's Girls Night</span>
+<nav class="hidden md:flex gap-4">
+<a class="text-primary border-b-2 border-primary pb-1 font-label-pixel text-label-pixel transition-transform active:translate-y-0.5" href="#">Home</a>
+<a class="text-on-surface-variant font-label-pixel text-label-pixel hover:bg-primary-container hover:text-on-primary-container transition-transform active:translate-y-0.5 px-2 py-1" href="#rsvp">RSVP</a>
+<a class="text-on-surface-variant font-label-pixel text-label-pixel hover:bg-primary-container hover:text-on-primary-container transition-transform active:translate-y-0.5 px-2 py-1" href="#playlist">Playlist</a>
+<a class="text-on-surface-variant font-label-pixel text-label-pixel hover:bg-primary-container hover:text-on-primary-container transition-transform active:translate-y-0.5 px-2 py-1" href="#gallery">Gallery</a>
+<a class="text-on-surface-variant font-label-pixel text-label-pixel hover:bg-primary-container hover:text-on-primary-container transition-transform active:translate-y-0.5 px-2 py-1" href="#chat">Chat</a>
+</nav>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-6 h-6 border-2 border-on-background flex items-center justify-center bg-surface-container hover:bg-surface-variant active:bg-surface-dim transition-colors">
+<span class="material-symbols-outlined text-[16px]">minimize</span>
+</button>
+<button class="w-6 h-6 border-2 border-on-background flex items-center justify-center bg-surface-container hover:bg-surface-variant active:bg-surface-dim transition-colors">
+<span class="material-symbols-outlined text-[16px]">square</span>
+</button>
+<button class="w-6 h-6 border-2 border-on-background flex items-center justify-center bg-error-container text-on-error-container hover:bg-[#ffb4ab] active:bg-[#ff897d] transition-colors">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="pt-20 px-4 md:px-8 max-w-7xl mx-auto relative grid grid-cols-1 md:grid-cols-12 gap-6 pb-24">
+<!-- Background Stickers -->
+<div class="absolute top-32 left-10 sticker opacity-50 hidden md:block">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+<div class="absolute top-64 right-20 sticker opacity-50 hidden md:block" style="animation-delay: 1s;">
+<span class="material-symbols-outlined text-4xl text-tertiary" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<div class="absolute bottom-1/4 left-1/4 sticker opacity-50 hidden md:block" style="animation-delay: 2s;">
+<span class="material-symbols-outlined text-4xl text-secondary" style="font-variation-settings: 'FILL' 1;">music_note</span>
+</div>
+<!-- Left Column (Nav & Quick Links) -->
+<div class="md:col-span-3 space-y-6">
+<!-- Quick Links Window -->
+<div class="retro-window flex flex-col">
+<div class="retro-window-header px-2 py-1 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-secondary">link</span>
+<span class="font-label-pixel text-label-pixel font-bold">Quick Links</span>
+</div>
+<div class="flex gap-1">
+<div class="w-3 h-3 border border-on-background bg-surface-container"></div>
+<div class="w-3 h-3 border border-on-background bg-surface-container"></div>
+<div class="w-3 h-3 border border-on-background bg-error-container flex items-center justify-center">
+<span class="text-[8px] leading-none block">x</span>
+</div>
+</div>
+</div>
+<div class="p-2 bg-surface-container-lowest flex flex-col gap-1">
+<a class="flex items-center justify-between p-1 hover:bg-primary-container hover:text-on-primary-container transition-colors font-label-pixel text-label-pixel" href="#about">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">star</span>
+<span>About</span>
+</div>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-1 hover:bg-primary-container hover:text-on-primary-container transition-colors font-label-pixel text-label-pixel" href="#location">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">map</span>
+<span>Location</span>
+</div>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-1 hover:bg-primary-container hover:text-on-primary-container transition-colors font-label-pixel text-label-pixel" href="#wishlist">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">shopping_bag</span>
+<span>Wishlist</span>
+</div>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-1 hover:bg-primary-container hover:text-on-primary-container transition-colors font-label-pixel text-label-pixel" href="#guestbook">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">edit_document</span>
+<span>Guestbook</span>
+</div>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+</div>
+</div>
+<!-- Welcome Sticky Note -->
+<div class="bg-[#FFF9C4] border-2 border-[#E6C200] p-4 shadow-[4px_4px_0px_rgba(0,0,0,0.1)] transform rotate-2 relative">
+<div class="absolute -top-3 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-red-400 opacity-50 z-10"></div>
+<h3 class="font-headline-sm text-headline-sm mb-2 text-[#F57F17]">don't forget</h3>
+<ul class="font-label-pixel text-label-pixel space-y-2 text-[#F57F17]">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-[14px]">star</span> BYOB</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-[14px]">star</span> Wear Pink!</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-[14px]">star</span> RSVP by 10th</li>
+</ul>
+</div>
+</div>
+<!-- Center Column (Hero & Main Content) -->
+<div class="md:col-span-6 space-y-8 flex flex-col items-center">
+<!-- Hero Section -->
+<div class="text-center relative w-full">
+<h1 class="font-headline-xl text-headline-xl md:text-5xl lg:text-7xl uppercase holographic-text drop-shadow-[2px_2px_0px_#1a1c1c] tracking-tighter transform -rotate-2">
+                    Sua's Pink Era
+                </h1>
+<p class="font-label-pixel text-label-pixel mt-4">Y2K fashion, digital dreams, and good vibes only.</p>
+<!-- Main Image Window -->
+<div class="retro-window mt-8 mx-auto w-full max-w-md relative z-10 transform rotate-1">
+<div class="retro-window-header px-2 py-1 flex justify-between items-center bg-blue-300">
+<div class="flex items-center gap-2">
+<span class="font-label-pixel text-label-pixel font-bold text-white">cute.jpg</span>
+</div>
+<div class="flex gap-1">
+<div class="w-3 h-3 border border-on-background bg-surface-container"></div>
+<div class="w-3 h-3 border border-error bg-error flex items-center justify-center">
+<span class="text-[8px] leading-none block text-white">x</span>
+</div>
+</div>
+</div>
+<div class="p-1 bg-surface-container-lowest">
+<img alt="A bright, high-contrast, modern portrait of a young woman in Y2K inspired pink clothing and shiny lip gloss, looking playful. The lighting is studio quality, bright white background, creating a distinct retro-futuristic digital aesthetic." class="w-full h-auto border-2 border-on-background filter saturate-150 contrast-125" data-alt="A bright, high-contrast, modern portrait of a young woman in Y2K inspired pink clothing and shiny lip gloss, looking playful. The lighting is studio quality, bright white background, creating a distinct retro-futuristic digital aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDo377fF0DjlPSe5TSeSDHlMAAOKNyafZU0TShPpXPiNIBRs9pASafM2KezgjrLZRZ6gY8U6eGXtGyo4FaYrNlaCLRT7TUbahw0xRKeVeo1e2AT9UrH4GOUzt7INkudUxaE4k3fo6Nc8UtpjtXIFbT_3svhDGgd864UfmCtnTrwWToyuezsxHE5_1mIvhmO8FOSyX26UKQVZ0M4q-P7K_rH_kmuxEEfQO5gueQk1FwFMT4Mm1rMUo1-jQDhb6_vVeOyU7rJMCqObSdA"/>
+</div>
+</div>
+</div>
+<!-- Notice Window -->
+<div class="retro-window w-full" id="about">
+<div class="retro-window-header px-2 py-1 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">info</span>
+<span class="font-label-pixel text-label-pixel font-bold">Notice.txt</span>
+</div>
+<div class="flex gap-1">
+<div class="w-3 h-3 border border-on-background bg-surface-container"></div>
+<div class="w-3 h-3 border border-on-background bg-error-container flex items-center justify-center">
+<span class="text-[8px] leading-none block">x</span>
+</div>
+</div>
+</div>
+<div class="p-4 bg-surface-container-lowest font-body-md text-body-md">
+<p class="mb-4">Hey babes! Welcome to my digital dollhouse. Get ready for the ultimate Y2K throwback party. We're talking flip phones, frosted lip gloss, and all the 2000s bops.</p>
+<div class="bg-primary-container p-3 border-2 border-on-background font-label-pixel text-label-pixel mt-4">
+<p><strong>When:</strong> Friday, 8:00 PM</p>
+<p><strong>Where:</strong> The Pink Room</p>
+<p><strong>Dress Code:</strong> 2000s Cyber Core</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column (Widgets) -->
+<div class="md:col-span-3 space-y-6">
+<!-- Music Player Window -->
+<div class="retro-window flex flex-col bg-[#ffafd5]">
+<div class="retro-window-header px-2 py-1 flex justify-between items-center !bg-[#ff99cc]">
+<div class="flex items-center gap-2">
+<span class="font-label-pixel text-label-pixel font-bold text-on-primary-container">now playing</span>
+</div>
+<div class="flex gap-1">
+<div class="w-3 h-3 border border-on-background bg-surface-container"></div>
+<div class="w-3 h-3 border border-on-background bg-surface-container"></div>
+<div class="w-3 h-3 border border-on-background bg-error-container flex items-center justify-center">
+<span class="text-[8px] leading-none block">x</span>
+</div>
+</div>
+</div>
+<div class="p-3 flex flex-col gap-3">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 bg-surface-container-lowest border-2 border-on-background flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">album</span>
+</div>
+<div class="font-label-pixel text-[12px] leading-tight">
+<p class="font-bold">dreaming.mp3</p>
+<p>by everydream</p>
+</div>
+</div>
+<div class="flex justify-between items-center mt-2 border-t border-on-background pt-2">
+<button class="hover:text-primary"><span class="material-symbols-outlined">skip_previous</span></button>
+<button class="hover:text-primary"><span class="material-symbols-outlined text-3xl">play_circle</span></button>
+<button class="hover:text-primary"><span class="material-symbols-outlined">skip_next</span></button>
+</div>
+<div class="h-2 w-full bg-surface-container-lowest border border-on-background mt-1 relative">
+<div class="absolute top-0 left-0 h-full w-1/3 bg-primary"></div>
+</div>
+</div>
+</div>
+<!-- New Message Notification -->
+<div class="retro-window bg-blue-100 border-blue-800 transform rotate-3">
+<div class="retro-window-header px-2 py-1 flex justify-between items-center !bg-blue-300 border-blue-800">
+<div class="flex items-center gap-2">
+<span class="font-label-pixel text-label-pixel font-bold text-blue-900">new message!</span>
+</div>
+<div class="w-3 h-3 border border-blue-800 bg-red-400 flex items-center justify-center">
+<span class="text-[8px] leading-none block text-white">x</span>
+</div>
+</div>
+<div class="p-4 text-center">
+<span class="material-symbols-outlined text-3xl text-pink-500 mb-2" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<p class="font-label-pixel text-label-pixel mb-3 text-blue-900">you have (1) new message</p>
+<button class="retro-button bg-blue-200 text-blue-900 font-label-pixel text-label-pixel px-4 py-1 text-xs">ok</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Taskbar -->
+<footer class="fixed bottom-0 left-0 w-full h-10 flex items-center px-1 gap-2 border-t-2 border-on-background z-[100] bg-surface-dim shadow-[inset_2px_2px_0px_#ffffff,inset_-2px_-2px_0px_#888888]">
+<button class="flex items-center gap-2 bg-primary text-on-primary rounded-none border-2 border-on-background p-1 shadow-[inset_-2px_-2px_0px_#000000,inset_2px_2px_0px_#ffffff] h-8 px-3 font-button-text text-button-text font-bold">
+<span class="material-symbols-outlined text-[16px]">apps</span>
+            Start
+        </button>
+<div class="w-px h-6 bg-on-surface-variant mx-1 opacity-30"></div>
+<!-- Open Apps (Nav Items) -->
+<div class="flex-1 flex items-center gap-1 overflow-x-auto hidden md:flex">
+<button class="flex items-center gap-2 text-on-surface p-1 border-2 border-transparent hover:bg-surface-variant h-8 px-2 font-label-pixel text-label-pixel bg-surface-container-lowest border-on-background shadow-[inset_1px_1px_0px_#ffffff,inset_-1px_-1px_0px_#888888]">
+<span class="material-symbols-outlined text-[14px]">home</span>
+                home.html
+            </button>
+<button class="flex items-center gap-2 text-on-surface p-1 border-2 border-transparent hover:bg-surface-variant h-8 px-2 font-label-pixel text-label-pixel">
+<span class="material-symbols-outlined text-[14px]">mail</span>
+                messages
+            </button>
+</div>
+<div class="w-px h-6 bg-on-surface-variant mx-1 opacity-30 hidden md:block"></div>
+<!-- System Tray -->
+<div class="flex items-center gap-2 px-2 h-8 border-2 border-transparent border-l-on-background border-t-on-background border-r-surface-container-lowest border-b-surface-container-lowest shadow-[inset_1px_1px_0px_#888888,inset_-1px_-1px_0px_#ffffff]">
+<span class="material-symbols-outlined text-[14px]">volume_up</span>
+<span class="material-symbols-outlined text-[14px]">wifi</span>
+<span class="font-label-pixel text-label-pixel text-xs ml-2">10:30 PM</span>
+</div>
+</footer>
+</body></html>
