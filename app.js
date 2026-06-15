@@ -12,8 +12,8 @@ function tick(){
   const el = document.getElementById("countdown");
   const tb = document.getElementById("tbTimer");
   if(diff <= 0){
-    el.textContent = "💖 IT'S SHOW TIME! 💖";
-    tb.textContent = "SHOW TIME 💖";
+    if(el) el.textContent = "💖 IT'S SHOW TIME! 💖";
+    if(tb) tb.textContent = "SHOW TIME 💖";
     return;
   }
   const d=Math.floor(diff/86400000),
@@ -21,7 +21,8 @@ function tick(){
         m=Math.floor((diff%3600000)/60000),
         s=Math.floor((diff%60000)/1000);
   const str = `D-${d}  ${pad(h)}:${pad(m)}:${pad(s)}`;
-  el.textContent = str; tb.textContent = str;
+  if(el) el.textContent = str;
+  if(tb) tb.textContent = str;
 }
 function pad(n){return String(n).padStart(2,"0")}
 tick(); setInterval(tick,1000);
@@ -34,14 +35,16 @@ updateClock(); setInterval(updateClock,10000);
 
 // ── 초기화 ────────────────────────────────────────
 window.onload = function(){
-  if(!isConfigured) document.getElementById("configWarning").style.display="block";
+  const cw = document.getElementById("configWarning");
+  if(!isConfigured && cw) cw.style.display="block";
   const saved = localStorage.getItem("barbie_nickname");
   if(!saved){
-    document.getElementById("nicknameModal").style.display="flex";
+    const modal = document.getElementById("nicknameModal");
+    if(modal) modal.style.display="flex";
   } else {
     initUser(saved);
   }
-  if(sb){ loadComments(); loadWishlist(); subscribeRealtime(); }
+  if(sb){ loadComments(); loadWishlist(); loadPhotoDump(); subscribeRealtime(); }
 };
 
 function getNick(){ return localStorage.getItem("barbie_nickname"); }
@@ -60,6 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function initUser(nick){
   const nd = document.getElementById("nickDisplay");
+  if(!nd) return;
   nd.textContent = `✦ ${nick} 님 입장 ✦`;
   nd.style.display = "inline-block";
 }
@@ -110,6 +114,7 @@ async function loadComments(){
   const {data,error} = await sb.from("comments").select("*").order("created_at",{ascending:true});
   if(error){ console.error(error); return; }
   const list = document.getElementById("commentList");
+  if(!list) return;
   list.innerHTML = "";
   if(!data||data.length===0){
     list.innerHTML=`<li class="comment-empty">공지 정독했으면 닉네임 파서 댓글 달아라~!! 👑</li>`;
@@ -142,6 +147,7 @@ async function handleCommentSubmit(e){
 // ── 위시리스트 ────────────────────────────────────
 async function loadWishlist(){
   const grid = document.getElementById("wishGrid");
+  if(!grid) return;
   const [ir,cr] = await Promise.all([
     sb.from("wishlist_items").select("*").order("sort_order"),
     sb.from("wishlist_claims").select("*")
@@ -207,6 +213,111 @@ function subscribeRealtime(){
     .on("postgres_changes",{event:"*",schema:"public",table:"wishlist_claims"},()=>loadWishlist())
     .subscribe();
 }
+
+// ── 포토덤프 ──────────────────────────────────────
+const MAX_PHOTO_SIZE = 20 * 1024 * 1024;
+
+async function loadPhotoDump(){
+  const grid = document.getElementById("photoDumpGrid");
+  if(!grid) return;
+  const {data,error} = await sb.from("photo_dump").select("*").order("created_at",{ascending:false});
+  if(error){ console.error(error); return; }
+  grid.innerHTML = "";
+  if(!data||data.length===0){
+    grid.innerHTML = `<div class="photo-dump-empty">아직 사진이 없어! 첫 번째로 올려봐 📸</div>`;
+    return;
+  }
+  data.forEach(addPhotoCard);
+}
+
+function addPhotoCard(photo){
+  const grid = document.getElementById("photoDumpGrid");
+  if(!grid) return;
+  const empty = grid.querySelector(".photo-dump-empty");
+  if(empty) empty.remove();
+  const {data:urlData} = sb.storage.from("photos").getPublicUrl(photo.file_path);
+  const card = document.createElement("div");
+  card.className = "photo-card";
+  card.innerHTML =
+    `<img class="photo-card-img" src="${escAttr(urlData.publicUrl)}" alt="${escAttr(photo.file_name)}" loading="lazy" data-url="${escAttr(urlData.publicUrl)}" onclick="openPhotoLightbox(this.dataset.url)">` +
+    `<div class="photo-card-footer">` +
+      `<span class="photo-card-nick">${esc(photo.nickname)}</span>` +
+      `<button class="photo-dl-btn" data-path="${escAttr(photo.file_path)}" data-name="${escAttr(photo.file_name)}" onclick="downloadPhoto(this.dataset.path,this.dataset.name)">` +
+        `<span class="msym" style="font-size:12px">download</span>DL` +
+      `</button>` +
+    `</div>`;
+  grid.insertBefore(card, grid.firstChild);
+}
+
+async function handlePhotoUpload(files){
+  const nick = getNick();
+  if(!nick){ alert("닉네임 설정이 필요해! 💋"); return; }
+  if(!sb){ alert("Supabase 설정이 필요해요 ⚙️"); return; }
+  const validFiles = Array.from(files).filter(f=>{
+    if(f.size > MAX_PHOTO_SIZE){ alert(`${f.name}은 20MB를 초과해서 건너뜰게요 🥲`); return false; }
+    return true;
+  });
+  if(!validFiles.length) return;
+
+  const progress = document.getElementById("photoUploadProgress");
+  const bar = document.getElementById("photoProgressBar");
+  const text = document.getElementById("photoProgressText");
+  progress.style.display = "flex";
+  let done = 0;
+
+  for(const file of validFiles){
+    const ext = file.name.split(".").pop().toLowerCase();
+    const path = `${crypto.randomUUID()}.${ext}`;
+    text.textContent = `${file.name} 업로드 중... (${done+1}/${validFiles.length})`;
+    bar.style.width = `${Math.round(done/validFiles.length*100)}%`;
+
+    const {error:stErr} = await sb.storage.from("photos").upload(path, file, {
+      cacheControl:"3600", upsert:false, contentType:file.type
+    });
+    if(stErr){ console.error(stErr); alert(`${file.name} 업로드 실패 🥲`); continue; }
+
+    const {error:dbErr} = await sb.from("photo_dump").insert({nickname:nick, file_path:path, file_name:file.name});
+    if(dbErr) console.error(dbErr);
+    done++;
+  }
+
+  bar.style.width = "100%";
+  text.textContent = `${done}개 완료! 💖`;
+  setTimeout(()=>{ progress.style.display="none"; bar.style.width="0%"; }, 2000);
+  document.getElementById("photoFileInput").value = "";
+}
+
+async function downloadPhoto(filePath, fileName){
+  if(!sb) return;
+  const {data,error} = await sb.storage.from("photos").download(filePath);
+  if(error||!data){ alert("다운로드 실패 🥲"); return; }
+  const url = URL.createObjectURL(data);
+  const a = document.createElement("a");
+  a.href = url; a.download = fileName; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function openPhotoLightbox(url){
+  const overlay = document.createElement("div");
+  overlay.className = "photo-lightbox";
+  const img = document.createElement("img");
+  img.src = url;
+  overlay.appendChild(img);
+  overlay.onclick = ()=> document.body.removeChild(overlay);
+  document.body.appendChild(overlay);
+}
+
+document.addEventListener("DOMContentLoaded", ()=>{
+  const zone = document.getElementById("photoDropZone");
+  if(!zone) return;
+  zone.addEventListener("dragover", e=>{ e.preventDefault(); zone.classList.add("drag-over"); });
+  zone.addEventListener("dragleave", ()=> zone.classList.remove("drag-over"));
+  zone.addEventListener("drop", e=>{
+    e.preventDefault();
+    zone.classList.remove("drag-over");
+    if(e.dataTransfer.files.length) handlePhotoUpload(e.dataTransfer.files);
+  });
+});
 
 // ── 유틸 ──────────────────────────────────────────
 function esc(s){

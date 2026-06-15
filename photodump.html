@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photo Dump · Sua's Pink Era</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── PHOTO DUMP PAGE ─────────────────── */
+.pd-hero{padding:28px 0 6px;text-align:center;position:relative}
+.pd-kicker{
+  font-family:var(--f-pixel);font-size:11px;
+  background:var(--surface);border:var(--bd);
+  padding:4px 14px;display:inline-block;box-shadow:var(--sh-sm);
+  color:var(--primary);margin-bottom:10px;
+}
+.pd-h1{
+  font-family:var(--f-head);font-size:clamp(48px,10vw,88px);font-weight:700;
+  line-height:1;filter:drop-shadow(2px 3px 0 #1a1c1c);
+  transform:rotate(-1.5deg);display:inline-block;margin-bottom:10px;
+}
+.pd-desc{font-family:var(--f-pixel);font-size:12px;color:var(--on-surface-variant)}
+
+/* count band */
+.pd-band{
+  margin:20px 0;height:50px;background:var(--holo-static);
+  border-top:var(--bd);border-bottom:var(--bd);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-pixel);font-size:17px;letter-spacing:2px;
+  color:var(--on-bg);position:relative;
+  box-shadow:0 3px 0 rgba(0,0,0,.08),0 -2px 0 rgba(0,0,0,.06);
+}
+.pd-band::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0) 55%);
+  pointer-events:none;
+}
+
+/* banner */
+.pd-banner{
+  display:none;background:var(--note);border:var(--bd);
+  padding:9px 12px;font-family:var(--f-pixel);font-size:11px;
+  margin-bottom:14px;color:#8d6e00;
+}
+</style>
+</head>
+<body>
+
+<!-- ── MODAL ───────────────────────────── -->
+<div id="nicknameModal" class="modal-overlay">
+  <div class="modal-window">
+    <div class="rw-head pink">
+      <div class="rw-title"><span class="msym" style="font-size:14px">favorite</span> welcome.exe</div>
+      <div class="rw-controls"><div class="wbtn"></div><div class="wbtn x">x</div></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title holo-text">✦ welcome ✦</div>
+      <p>수아의 핑크 에라에 오신 걸 환영해요!<br>닉네임을 입력해줘 💋</p>
+      <input id="nicknameInput" class="modal-input" type="text" placeholder="닉네임 입력..." maxlength="10">
+      <button class="modal-btn" onclick="saveNickname()">입장하기 💖</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── BROWSER CHROME ───────────────────── -->
+<div class="bc">
+  <div class="bc-l">
+    <div class="bc-dots">
+      <span class="bc-dot r"></span>
+      <span class="bc-dot y"></span>
+      <span class="bc-dot g"></span>
+    </div>
+    <span class="bc-ttl">Photo Dump · Sua's Pink Era</span>
+  </div>
+  <div class="bc-ctrls">
+    <span class="bc-ctrl">_</span>
+    <span class="bc-ctrl">□</span>
+    <span class="bc-ctrl">×</span>
+  </div>
+</div>
+
+<!-- ── NAVBAR ───────────────────────────── -->
+<nav class="navbar">
+  <div class="nav-logo">🎀 sua</div>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link" href="wishlist.html">Wishlist</a>
+    <a class="nav-link" href="whoisin.html">Who's In?</a>
+    <a class="nav-link active" href="photodump.html">Photo Dump</a>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────── -->
+<section class="pd-hero">
+  <span class="sticker" style="top:10px;left:8%;font-size:20px;animation-delay:.3s">✦</span>
+  <span class="sticker" style="top:30px;right:10%;font-size:24px;animation-delay:.9s">★</span>
+  <span class="sticker" style="top:60px;left:2%;font-size:16px;animation-delay:1.6s">♡</span>
+  <div class="pd-kicker">✿ 06.29 (MON) · GIRLS NIGHT PARTY ✿</div>
+  <h1 class="pd-h1 holo-text">PHOTO<br>DUMP</h1>
+  <p class="pd-desc">파티 사진 여기다 다 올려줘! 원본화질로 저장돼요 📸</p>
+</section>
+
+<!-- ── COUNT BAND ────────────────────────── -->
+<div class="pd-band" id="pdBand">사진 불러오는 중... ✦</div>
+
+<!-- ── MAIN ──────────────────────────────── -->
+<main class="wrap">
+
+  <div class="pd-banner" id="pdBanner">
+    ⚙ Supabase 미설정 → 사진 업로드·조회 기능 비활성화. 설정 후 사용 가능해요!
+  </div>
+
+  <section class="rw" style="margin-bottom:20px">
+    <div class="rw-head pink">
+      <div class="rw-title"><span class="msym" style="font-size:14px">photo_library</span> photo_dump.zip</div>
+      <div class="rw-controls"><div class="wbtn"></div><div class="wbtn x">x</div></div>
+    </div>
+    <div class="rw-body">
+      <div class="photo-upload-zone" id="photoDropZone" onclick="document.getElementById('photoFileInput').click()">
+        <span class="msym" style="font-size:36px;color:var(--primary)">upload</span>
+        <p>사진 올리기 💖<br><span style="font-size:11px;color:var(--on-surface-variant)">클릭하거나 드래그 — 여러 장 동시 가능, 원본화질 저장</span></p>
+        <input type="file" id="photoFileInput" accept="image/*" multiple style="display:none" onchange="handlePhotoUpload(this.files)">
+      </div>
+      <div id="photoUploadProgress" class="photo-upload-progress" style="display:none">
+        <div class="photo-progress-track"><div class="photo-progress-bar" id="photoProgressBar"></div></div>
+        <span id="photoProgressText">업로드 중...</span>
+      </div>
+      <div id="photoDumpGrid" class="photo-dump-grid">
+        <div class="photo-dump-empty">사진을 불러오는 중... ✦</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── TASKBAR ───────────────────────────── -->
+<div class="taskbar">
+  <div class="tb-start"><span class="msym" style="font-size:14px">apps</span> barbie.exe</div>
+  <div class="tb-div"></div>
+  <span class="tb-item" id="tbTimer">D-??</span>
+  <span class="tb-clock" id="tbClock">--:--</span>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+<script>
+window.onload = function(){
+  if(!isConfigured) document.getElementById("pdBanner").style.display = "block";
+  const saved = localStorage.getItem("barbie_nickname");
+  if(!saved){
+    document.getElementById("nicknameModal").style.display = "flex";
+  }
+  if(sb){
+    loadPhotoDump();
+    sb.channel("photos-page-ch")
+      .on("postgres_changes",{event:"INSERT",schema:"public",table:"photo_dump"},p=>{ addPhotoCard(p.new); updatePdBand(); })
+      .subscribe();
+  } else {
+    document.getElementById("photoDumpGrid").innerHTML = `<div class="photo-dump-empty">Supabase 설정 후 사진을 볼 수 있어요 ⚙</div>`;
+    document.getElementById("pdBand").textContent = "사진 0장";
+  }
+};
+
+function updatePdBand(){
+  const count = document.querySelectorAll("#photoDumpGrid .photo-card").length;
+  document.getElementById("pdBand").textContent =
+    count === 0 ? "아직 사진이 없어! 첫 번째로 올려봐 📸"
+                : `📸  사진 ${count}장 — 더 올려줘! 💖`;
+}
+
+const _origLoadPhotoDump = loadPhotoDump;
+async function loadPhotoDump(){
+  await _origLoadPhotoDump();
+  updatePdBand();
+}
+</script>
+</body>
+</html>

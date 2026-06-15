@@ -31,15 +31,10 @@
 <!-- ── BROWSER CHROME ───────────────────── -->
 <div class="bc">
   <div class="bc-l">
-    <div class="bc-dots">
-      <span class="bc-dot r"></span>
-      <span class="bc-dot y"></span>
-      <span class="bc-dot g"></span>
-    </div>
     <span class="bc-ttl">Sua's Girls Night Party</span>
   </div>
   <div class="bc-ctrls">
-    <span class="bc-ctrl">_</span>
+    <span class="bc-ctrl">-</span>
     <span class="bc-ctrl">□</span>
     <span class="bc-ctrl">×</span>
   </div>
@@ -50,11 +45,10 @@
   <div class="nav-logo">🎀 sua</div>
   <div class="nav-links">
     <a class="nav-link active" href="#">Home</a>
-    <a class="nav-link" href="#wishlist">Wishlist</a>
-    <a class="nav-link" href="#whoisin">Who's In?</a>
-    <a class="nav-link" href="#lookbook">Look Book</a>
-    <a class="nav-link" href="#xoxo">XOXO</a>
-    <a class="nav-link" href="#photodump">Photo Dump</a>
+    <a class="nav-link" href="wishlist.html">Wishlist</a>
+    <a class="nav-link" href="whoisin.html">Who's In?</a>
+
+    <a class="nav-link" href="photodump.html">Photo Dump</a>
   </div>
 </nav>
 
@@ -70,8 +64,8 @@
 
       <!-- 1. welcome sticky -->
       <div class="welcome-box">
-        <h3>don't forget 📌</h3>
-        <p>와줘서 진심으로 고마워! 수아의 핑크 에라를 같이 축하해줘서 넘 행복해 🩷<br><br>공지 확인하고 찜도 하고 한마디 남겨줘!</p>
+        <h3>Welcome!💖</h3>
+        <p>와줘서 진심으로 고마워! 수아의 생일을 같이 축하해줘서 넘 행복해 🩷<br><br>공지 확인하고, 한마디 남겨줘!</p>
         <span class="welcome-tag">✿ 06.29 YOU ARE INVITED ✿</span>
       </div>
 
@@ -98,7 +92,7 @@
         </div>
       </div>
 
-      <!-- 4. player + sticky -->
+      <!-- 4. player -->
       <div class="right-widgets">
         <div class="rw">
           <div class="rw-head pink">
@@ -125,31 +119,40 @@
             <audio id="bgAudio"></audio>
           </div>
         </div>
-        <div class="sticky-note">
-          <h4>don't forget</h4>
-          <ul>
-            <li><span class="msym" style="font-size:12px">star</span> drink water</li>
-            <li><span class="msym" style="font-size:12px">star</span> be kind</li>
-            <li><span class="msym" style="font-size:12px">star</span> more glitter</li>
-            <li><span class="msym" style="font-size:12px">star</span> less stress</li>
-            <li><span class="msym" style="font-size:12px">star</span> pretty girls wear pink</li>
-          </ul>
+      </div>
+
+      <!-- Row 2: dress.exe | timer | don't forget -->
+      <div class="dress-card rw">
+        <div class="rw-head pink">
+          <div class="rw-title"><span class="msym" style="font-size:14px">checkroom</span> dress.exe</div>
+          <div class="rw-controls"><div class="wbtn"></div><div class="wbtn x">x</div></div>
         </div>
+        <div class="dress-body">
+          <div class="dress-sparkles">✦ ★ ♡</div>
+          <div class="dress-label">dress code</div>
+          <div class="dress-main">HOT PINK<br>&amp; SPARKLE ✨</div>
+          <div class="dress-label">인간 바비가 되어 올 것</div>
+        </div>
+      </div>
+
+      <div class="timer-vert" id="countdown">loading...</div>
+
+      <div class="sticky-note">
+        <h4>don't forget</h4>
+        <ul>
+          <li><span class="msym" style="font-size:12px">star</span> be kind</li>
+          <li><span class="msym" style="font-size:12px">star</span> more glitter, less stress</li>
+          <li><span class="msym" style="font-size:12px">star</span> pretty girls wear pink</li>
+        </ul>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- ── TIMER BAND ────────────────────────── -->
-<div class="timer-band" id="countdown">loading...</div>
-
 <!-- ── MAIN ──────────────────────────────── -->
 <main class="wrap">
 
-  <div id="configWarning" class="config-warning">
-    ⚙ SUPABASE 키 미설정 — SUPABASE_URL / SUPABASE_ANON_KEY 를 채워야 댓글·위시리스트가 동작해요.
-  </div>
 
   <div class="content-grid">
 
@@ -173,7 +176,7 @@
       </div>
     </section>
 
-    <section class="rw" id="wishlist">
+    <!-- <section class="rw" id="wishlist">
       <div class="rw-head note">
         <div class="rw-title"><span class="msym" style="font-size:14px">shopping_bag</span> wishlist.dll</div>
         <div class="rw-controls"><div class="wbtn"></div><div class="wbtn x">x</div></div>
@@ -184,23 +187,9 @@
           <div class="wish-empty">위시리스트 불러오는 중... ✦</div>
         </div>
       </div>
-    </section>
+    </section> -->
 
   </div>
-
-  <section class="rw" style="margin-bottom:16px" id="xoxo">
-    <div class="rw-head">
-      <div class="rw-title"><span class="msym" style="font-size:14px">edit_document</span> comments.feed</div>
-      <div class="rw-controls"><div class="wbtn"></div><div class="wbtn x">x</div></div>
-    </div>
-    <div class="rw-body">
-      <form class="comment-form" onsubmit="handleCommentSubmit(event)">
-        <input id="commentInput" class="comment-input" type="text" placeholder="공지 확인 도장 쾅! 한마디 남기기 ✦" maxlength="200" required>
-        <button type="submit" class="comment-submit">등록</button>
-      </form>
-      <ul id="commentList" class="comment-list"></ul>
-    </div>
-  </section>
 
 </main>
 

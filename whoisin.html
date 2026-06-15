@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Who's In? · Sua's Pink Era</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── WHO'S IN PAGE ───────────────────── */
+.wi-hero{padding:28px 0 6px;text-align:center;position:relative}
+.wi-kicker{
+  font-family:var(--f-pixel);font-size:11px;
+  background:var(--surface);border:var(--bd);
+  padding:4px 14px;display:inline-block;box-shadow:var(--sh-sm);
+  color:var(--primary);margin-bottom:10px;
+}
+.wi-h1{
+  font-family:var(--f-head);font-size:clamp(48px,10vw,88px);font-weight:700;
+  line-height:1;filter:drop-shadow(2px 3px 0 #1a1c1c);
+  transform:rotate(-1.5deg);display:inline-block;margin-bottom:10px;
+}
+.wi-desc{font-family:var(--f-pixel);font-size:12px;color:var(--on-surface-variant)}
+
+/* count band */
+.count-band{
+  margin:20px 0;height:50px;background:var(--holo-static);
+  border-top:var(--bd);border-bottom:var(--bd);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-pixel);font-size:17px;letter-spacing:2px;
+  color:var(--on-bg);position:relative;
+  box-shadow:0 3px 0 rgba(0,0,0,.08),0 -2px 0 rgba(0,0,0,.06);
+}
+.count-band::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0) 55%);
+  pointer-events:none;
+}
+
+/* banner */
+.wi-banner{
+  display:none;background:var(--note);border:var(--bd);
+  padding:9px 12px;font-family:var(--f-pixel);font-size:11px;
+  margin-bottom:14px;color:#8d6e00;
+}
+
+/* RSVP box */
+.wi-rsvp-wrap{max-width:640px;margin:0 auto 24px}
+.wi-rsvp-desc{font-size:13px;color:var(--on-surface-variant);font-weight:600;margin-bottom:14px}
+.wi-nick-row{font-family:var(--f-pixel);font-size:12px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.wi-nick-tag{background:var(--secondary-container);border:var(--bd-thin);padding:3px 10px;font-size:13px;font-weight:700}
+.wi-form-row{display:flex;border:var(--bd);box-shadow:var(--sh-sm)}
+.wi-msg-input{flex:1;border:none;outline:none;padding:10px 14px;font-family:var(--f-body);font-size:13px;background:var(--surface);color:var(--on-bg)}
+.wi-msg-input::placeholder{color:var(--outline)}
+.wi-submit-btn{
+  border:none;border-left:var(--bd);background:var(--primary);color:var(--on-primary);
+  padding:0 18px;cursor:pointer;font-family:var(--f-pixel);font-size:11px;
+  white-space:nowrap;transition:opacity .1s;
+}
+.wi-submit-btn:hover{opacity:.85}
+
+/* joined state */
+.wi-joined{text-align:center;padding:18px 0 10px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.wi-joined-icon{font-size:40px;line-height:1}
+.wi-joined-text{font-family:var(--f-head);font-size:16px;font-weight:700}
+.wi-cancel-btn{
+  font-family:var(--f-pixel);font-size:10px;background:var(--surface);
+  color:var(--on-surface-variant);border:var(--bd-thin);padding:4px 12px;
+  cursor:pointer;transition:background .1s;
+}
+.wi-cancel-btn:hover{background:var(--error-container);color:var(--on-error-container)}
+
+/* section title */
+.wi-section-hd{
+  font-family:var(--f-pixel);font-size:12px;font-weight:700;
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.wi-section-hd::after{content:"";flex:1;height:1px;background:var(--outline-variant)}
+
+/* attendees grid */
+.wi-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:12px;margin-bottom:32px;
+}
+.wi-card{
+  border:var(--bd);background:var(--surface);box-shadow:var(--sh);
+  overflow:hidden;display:flex;flex-direction:column;
+  transition:transform .15s,box-shadow .15s;
+}
+.wi-card:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 rgba(0,0,0,.12)}
+.wi-card-hd{border-bottom:var(--bd);padding:5px 10px;display:flex;align-items:center;justify-content:space-between}
+.wi-card-hd.c0{background:linear-gradient(90deg,#ffd8e8,#ffb3d0)}
+.wi-card-hd.c1{background:linear-gradient(90deg,#bbdefb,#90caf9)}
+.wi-card-hd.c2{background:linear-gradient(90deg,var(--secondary-container),var(--secondary-fixed))}
+.wi-card-hd.c3{background:linear-gradient(90deg,#fff59d,#fffde7)}
+.wi-card-no{font-family:var(--f-pixel);font-size:11px;font-weight:700}
+.wi-badge{font-family:var(--f-pixel);font-size:9px;background:rgba(255,255,255,.6);border:var(--bd-thin);padding:2px 6px;color:var(--primary)}
+.wi-card-bd{padding:12px;flex:1}
+.wi-card-nick{font-family:var(--f-head);font-size:18px;font-weight:700;margin-bottom:4px}
+.wi-card-msg{font-size:12px;color:var(--on-surface-variant);font-style:italic;margin-bottom:8px;min-height:18px;line-height:1.4}
+.wi-card-date{font-family:var(--f-pixel);font-size:9px;color:var(--outline)}
+.wi-empty{
+  grid-column:1/-1;font-family:var(--f-pixel);font-size:12px;
+  color:var(--on-surface-variant);text-align:center;padding:28px 0;
+}
+
+@media(max-width:640px){
+  .wi-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .wi-card-nick{font-size:15px}
+  .count-band{font-size:13px;letter-spacing:1px}
+}
+@media(max-width:420px){
+  .wi-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ── MODAL ───────────────────────────── -->
+<div id="nicknameModal" class="modal-overlay">
+  <div class="modal-window">
+    <div class="rw-head pink">
+      <div class="rw-title"><span class="msym" style="font-size:14px">favorite</span> welcome.exe</div>
+      <div class="rw-controls"><div class="wbtn"></div><div class="wbtn x">x</div></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title holo-text">✦ welcome ✦</div>
+      <p>수아의 핑크 에라에 오신 걸 환영해요!<br>닉네임을 입력해줘 💋</p>
+      <input id="nicknameInput" class="modal-input" type="text" placeholder="닉네임 입력..." maxlength="10">
+      <button class="modal-btn" onclick="saveNickname()">입장하기 💖</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── BROWSER CHROME ───────────────────── -->
+<div class="bc">
+  <div class="bc-l">
+    <div class="bc-dots">
+      <span class="bc-dot r"></span>
+      <span class="bc-dot y"></span>
+      <span class="bc-dot g"></span>
+    </div>
+    <span class="bc-ttl">Who's In? · Sua's Pink Era</span>
+  </div>
+  <div class="bc-ctrls">
+    <span class="bc-ctrl">_</span>
+    <span class="bc-ctrl">□</span>
+    <span class="bc-ctrl">×</span>
+  </div>
+</div>
+
+<!-- ── NAVBAR ───────────────────────────── -->
+<nav class="navbar">
+  <div class="nav-logo">🎀 sua</div>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link" href="wishlist.html">Wishlist</a>
+    <a class="nav-link active" href="whoisin.html">Who's In?</a>
+
+    <a class="nav-link" href="photodump.html">Photo Dump</a>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────── -->
+<section class="wi-hero">
+  <span class="sticker" style="top:10px;left:8%;font-size:20px;animation-delay:.3s">✦</span>
+  <span class="sticker" style="top:30px;right:10%;font-size:24px;animation-delay:.9s">★</span>
+  <span class="sticker" style="top:60px;left:2%;font-size:16px;animation-delay:1.6s">♡</span>
+  <div class="wi-kicker">✿ 06.29 (MON) · GIRLS NIGHT PARTY ✿</div>
+  <h1 class="wi-h1 holo-text">WHO'S<br>IN?</h1>
+  <p class="wi-desc">같이 갈 친구들 손 들어봐! 💖</p>
+</section>
+
+<!-- ── COUNT BAND ────────────────────────── -->
+<div class="count-band" id="countBand">불러오는 중... ✦</div>
+
+<!-- ── MAIN ──────────────────────────────── -->
+<main class="wrap">
+
+  <!-- banner -->
+  <div class="wi-banner" id="wiBanner">
+    ⚙ Supabase 미설정 → 참석 확정 기능 비활성화. 설정 후 사용 가능해요!
+  </div>
+
+  <!-- RSVP box -->
+  <div class="wi-rsvp-wrap">
+    <div class="rw">
+      <div class="rw-head pink">
+        <div class="rw-title"><span class="msym" style="font-size:14px">how_to_reg</span> join.exe</div>
+        <div class="rw-controls"><div class="wbtn"></div><div class="wbtn x">x</div></div>
+      </div>
+      <div class="rw-body" id="rsvpBody">
+        <div style="text-align:center;font-family:var(--f-pixel);font-size:12px;color:var(--outline);padding:10px 0">불러오는 중... ✦</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- attendee list -->
+  <div class="wi-section-hd">💖 참석 확정 명단</div>
+  <div class="wi-grid" id="wiGrid">
+    <div class="wi-empty">불러오는 중... ✦</div>
+  </div>
+
+</main>
+
+<!-- ── TASKBAR ───────────────────────────── -->
+<div class="taskbar">
+  <div class="tb-start"><span class="msym" style="font-size:14px">apps</span> barbie.exe</div>
+  <div class="tb-div"></div>
+  <span class="tb-item" id="tbTimer">D-??</span>
+  <span class="tb-clock" id="tbClock">--:--</span>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+<script>
+// 가나다 순 기본 참석자 — Supabase 미설정 시 정적 표시 / 설정 시 seed SQL과 연동
+const STATIC_ATTENDEES = [
+  {nickname:"김은우"},
+  {nickname:"김희재"},
+  {nickname:"남다현"},
+  {nickname:"이다은"},
+  {nickname:"이채은"},
+  {nickname:"장서은"},
+  {nickname:"최은서"},
+  {nickname:"최이아름"},
+  {nickname:"허보윤"},
+];
+
+let wiAttendees = [];
+
+// app.js의 saveNickname 덮어씀 (이 페이지에서는 wiLoad 호출)
+function saveNickname(){
+  const v = document.getElementById("nicknameInput").value.trim();
+  if(!v){ alert("닉네임을 입력해줘! 💋"); return; }
+  localStorage.setItem("barbie_nickname", v);
+  document.getElementById("nicknameModal").style.display = "none";
+  if(sb) wiLoad(); else renderWi();
+}
+
+function fmtDate(iso){
+  const d = new Date(iso);
+  return `${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`;
+}
+
+function renderWi(){
+  const myNick    = localStorage.getItem("barbie_nickname");
+  const list      = sb ? wiAttendees : STATIC_ATTENDEES;
+  const count     = list.length;
+  const isIn      = sb && wiAttendees.some(a => a.nickname === myNick);
+
+  // count band
+  const band = document.getElementById("countBand");
+  band.textContent = count === 0
+    ? "아직 아무도 없어요 🥲  첫 번째로 등록해봐!"
+    : `🎉  ${count}명 참석 확정!  더 많이 모여라 💖`;
+
+  // RSVP body
+  const body = document.getElementById("rsvpBody");
+  if(!sb){
+    body.innerHTML = `<p style="font-family:var(--f-pixel);font-size:11px;color:var(--outline);text-align:center;padding:10px 0">Supabase 설정 후 참석 확정이 가능해요 ⚙</p>`;
+  } else if(isIn){
+    body.innerHTML = `
+      <div class="wi-joined">
+        <div class="wi-joined-icon">🎀</div>
+        <div class="wi-joined-text"><strong>${esc(myNick)}</strong> 님 참석 확정됐어요! 💖</div>
+        <button class="wi-cancel-btn" onclick="wiCancel()">참석 취소하기</button>
+      </div>`;
+  } else {
+    body.innerHTML = `
+      <p class="wi-rsvp-desc">참석 확정하면 명단에 이름이 올라가요! 💖</p>
+      <div class="wi-nick-row">닉네임 <span class="wi-nick-tag">${esc(myNick||"—")}</span> 으로 등록해요.</div>
+      <form class="wi-form-row" onsubmit="wiRsvp(event)">
+        <input class="wi-msg-input" type="text" id="wiMsgInput"
+          placeholder="파티 각오 한마디... (선택)" maxlength="50">
+        <button type="submit" class="wi-submit-btn">참석 확정! 🎉</button>
+      </form>`;
+  }
+
+  // attendees grid
+  const grid = document.getElementById("wiGrid");
+  if(list.length === 0){
+    grid.innerHTML = `<div class="wi-empty">아직 아무도 없어요 🥲<br>첫 번째로 참석 확정해봐!</div>`;
+    return;
+  }
+  const COLS = ["c0","c1","c2","c3"];
+  grid.innerHTML = list.map((a, i) => `
+    <div class="wi-card">
+      <div class="wi-card-hd ${COLS[i % 4]}">
+        <span class="wi-card-no">No.${String(i+1).padStart(2,"0")}</span>
+        <span class="wi-badge">✓ 참석</span>
+      </div>
+      <div class="wi-card-bd">
+        <div class="wi-card-nick">💖 ${esc(a.nickname)}</div>
+        <div class="wi-card-msg">${a.message ? `"${esc(a.message)}"` : ""}</div>
+        ${a.created_at ? `<div class="wi-card-date">${fmtDate(a.created_at)} 참석 확정</div>` : ""}
+      </div>
+    </div>`).join("");
+}
+
+async function wiLoad(){
+  const {data, error} = await sb.from("attendees").select("*").order("nickname",{ascending:true});
+  if(error){ console.error(error); return; }
+  wiAttendees = data || [];
+  renderWi();
+}
+
+async function wiRsvp(e){
+  e.preventDefault();
+  const nick = localStorage.getItem("barbie_nickname");
+  if(!nick){ alert("닉네임 설정이 필요해! 💋"); return; }
+  const msg = (document.getElementById("wiMsgInput")?.value || "").trim();
+  const {error} = await sb.from("attendees").insert({nickname:nick, message:msg});
+  if(error) alert(error.code==="23505"?"이미 참석 확정됐어요! 💖":(error.message||"등록 실패 🥲"));
+  await wiLoad();
+}
+
+async function wiCancel(){
+  if(!confirm("참석을 취소할까요?")) return;
+  const nick = localStorage.getItem("barbie_nickname");
+  const {error} = await sb.from("attendees").delete().eq("nickname", nick);
+  if(error) alert("취소 실패 🥲");
+  await wiLoad();
+}
+
+// app.js의 window.onload 덮어씀
+window.onload = function(){
+  if(!isConfigured) document.getElementById("wiBanner").style.display = "block";
+  const saved = localStorage.getItem("barbie_nickname");
+  if(!saved){
+    document.getElementById("nicknameModal").style.display = "flex";
+  }
+  if(sb){
+    wiLoad();
+    sb.channel("wi-attendees-ch")
+      .on("postgres_changes",{event:"*",schema:"public",table:"attendees"},()=>wiLoad())
+      .subscribe();
+  } else {
+    renderWi();
+  }
+};
+</script>
+</body>
+</html>

@@ -101,11 +101,87 @@ alter publication supabase_realtime add table wishlist_claims;
 
 
 -- ----------------------------------------------------
--- 5) (선택) 선물 목록 시드 예시 — wish_list.txt 확정 후 교체
---    title / price / link_url / image_url / sort_order
+-- 5) 선물 목록 시드 — wish_list.txt 기준 (wishlist.html의 UUID와 동일)
+--    on conflict do nothing → 중복 실행 안전
 -- ----------------------------------------------------
--- insert into wishlist_items (title, price, link_url, image_url, sort_order) values
---   ('예시 선물 A', '29,000원', 'https://...', 'https://.../a.jpg', 1),
---   ('예시 선물 B', '15,000원', 'https://...', 'https://.../b.jpg', 2);
+insert into wishlist_items (id, title, link_url, sort_order) values
+  ('00000000-0000-0000-0000-000000000001', '위시',                             'https://gift.kakao.com/product/10343767',                                                                            1),
+  ('00000000-0000-0000-0000-000000000002', '넘버즈인 판토텐산 블러 파우더 7g', 'https://numbuzin.com/product/1번-판토텐산-스킨케어100-블러파우더-7g/135/category/100/display/1/',                    2),
+  ('00000000-0000-0000-0000-000000000003', '여행용 목베개',                    'https://smartstore.naver.com/gtcare/products/12149502745',                                                           3),
+  ('00000000-0000-0000-0000-000000000004', '러쉬 로션',                        'https://gift.kakao.com/product/12111299',                                                                            4),
+  ('00000000-0000-0000-0000-000000000005', '올라플렉스 헤어 퍼팩터',            'https://www.oliveyoung.co.kr/store/goods/getGoodsDetail.do?goodsNo=A000000185282',                                  5),
+  ('00000000-0000-0000-0000-000000000006', '클로란 쿠푸아수 버터 리페어 샴푸', 'https://www.oliveyoung.co.kr/store/goods/getGoodsDetail.do?goodsNo=A000000157789',                                  6),
+  ('00000000-0000-0000-0000-000000000007', '네일팁',                           null,                                                                                                                 7),
+  ('00000000-0000-0000-0000-000000000008', '토지',                             'https://product.kyobobook.co.kr/detail/S000202594963',                                                               8),
+  ('00000000-0000-0000-0000-000000000009', '독서대',                           null,                                                                                                                 9),
+  ('00000000-0000-0000-0000-000000000010', '파우치 — 프롬디얼리던',             'https://hottracks.kyobobook.co.kr/gift/detail/S000219303542',                                                        10),
+  ('00000000-0000-0000-0000-000000000011', '데스크 매트',                      null,                                                                                                                 11)
+on conflict (id) do nothing;
+
+-- ----------------------------------------------------
+-- 6) 참석자 (Who's In)
+-- ----------------------------------------------------
+create table if not exists attendees (
+  id         uuid primary key default gen_random_uuid(),
+  nickname   text not null,
+  message    text not null default '',
+  created_at timestamptz not null default now(),
+  constraint uq_attendee_nickname unique (nickname)
+);
+
+create index if not exists idx_attendees_created on attendees (created_at);
+
+-- RLS
+alter table attendees enable row level security;
+create policy "attendees_select" on attendees for select using (true);
+create policy "attendees_insert" on attendees for insert with check (true);
+create policy "attendees_delete" on attendees for delete using (true);
+
+-- Realtime
+alter publication supabase_realtime add table attendees;
+
+-- 참석자 시드 (가나다 순) — on conflict do nothing → 중복 실행 안전
+insert into attendees (nickname) values
+  ('김은우'),
+  ('김희재'),
+  ('남다현'),
+  ('이다은'),
+  ('이채은'),
+  ('장서은'),
+  ('최은서'),
+  ('최이아름'),
+  ('허보윤')
+on conflict (nickname) do nothing;
+
+-- ----------------------------------------------------
+-- 7) 포토덤프 (Photo Dump)
+-- ----------------------------------------------------
+create table if not exists photo_dump (
+  id          uuid primary key default gen_random_uuid(),
+  nickname    text not null,
+  file_path   text not null,   -- storage 경로: {uuid}.{ext}
+  file_name   text not null,   -- 원본 파일명
+  created_at  timestamptz not null default now()
+);
+
+create index if not exists idx_photos_created on photo_dump (created_at desc);
+
+alter table photo_dump enable row level security;
+create policy "photos_select" on photo_dump for select using (true);
+create policy "photos_insert" on photo_dump for insert with check (true);
+
+alter publication supabase_realtime add table photo_dump;
+
+-- Storage 버킷 설정 (SQL Editor에서 실행)
+-- 버킷 생성 (public = 썸네일 직접 URL 접근 허용)
+insert into storage.buckets (id, name, public)
+  values ('photos', 'photos', true)
+  on conflict (id) do nothing;
+
+-- Storage RLS: 누구나 업로드·조회 가능
+create policy "storage_photos_insert" on storage.objects
+  for insert with check (bucket_id = 'photos');
+create policy "storage_photos_select" on storage.objects
+  for select using (bucket_id = 'photos');
 
 -- 완료! 🎉
