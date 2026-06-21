@@ -229,11 +229,13 @@ const STATIC_ATTENDEES = [
 let wiAttendees = [];
 
 // app.js의 saveNickname 덮어씀 (이 페이지에서는 wiLoad 호출)
-function saveNickname(){
+async function saveNickname(){
   const v = document.getElementById("nicknameInput").value.trim();
   if(!v){ alert("닉네임을 입력해줘! 💋"); return; }
+  const old = localStorage.getItem("barbie_nickname");
   localStorage.setItem("barbie_nickname", v);
   document.getElementById("nicknameModal").style.display = "none";
+  await propagateNicknameChange(old, v);
   updateNavNick();
   if(sb) wiLoad(); else renderWi();
 }

@@ -6,7 +6,7 @@ const sb = isConfigured ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 const MAX_CLAIMS = 3;
 
 // ── 카운트다운 ────────────────────────────────────
-const TARGET = new Date("2026-06-29T17:00:00").getTime();
+const TARGET = new Date("2026-06-30T17:00:00").getTime();
 function tick(){
   const diff = TARGET - Date.now();
   const el = document.getElementById("countdown");
@@ -49,11 +49,35 @@ window.onload = function(){
 
 function getNick(){ return localStorage.getItem("barbie_nickname"); }
 
-function saveNickname(){
+// 닉네임이 바뀌면 참석명단(attendees)·찜(wishlist_claims)의 기존 기록도 새 닉네임으로 옮긴다.
+// UPDATE용 RLS 정책이 없으므로 기존 select/insert/delete 정책만으로 처리한다.
+async function propagateNicknameChange(oldNick, newNick){
+  if(!sb || !oldNick || !newNick || oldNick === newNick) return;
+  try {
+    // 참석 확정 명단
+    const {data: att} = await sb.from("attendees").select("message").eq("nickname", oldNick);
+    if(att && att.length){
+      await sb.from("attendees").delete().eq("nickname", oldNick);
+      await sb.from("attendees").insert(att.map(r => ({nickname:newNick, message:r.message})));
+    }
+    // 찜하기
+    const {data: claims} = await sb.from("wishlist_claims").select("item_id").eq("nickname", oldNick);
+    if(claims && claims.length){
+      await sb.from("wishlist_claims").delete().eq("nickname", oldNick);
+      await sb.from("wishlist_claims").insert(claims.map(c => ({item_id:c.item_id, nickname:newNick})));
+    }
+  } catch(e){
+    console.error("닉네임 변경 반영 실패:", e);
+  }
+}
+
+async function saveNickname(){
   const v = document.getElementById("nicknameInput").value.trim();
   if(!v){ alert("닉네임을 입력해줘! 💋"); return; }
+  const old = getNick();
   localStorage.setItem("barbie_nickname", v);
   document.getElementById("nicknameModal").style.display="none";
+  await propagateNicknameChange(old, v);
   initUser(v);
   updateNavNick();
   if(sb) loadWishlist();

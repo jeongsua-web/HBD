@@ -227,16 +227,19 @@ const WISH_ITEMS = [
   { id:"00000000-0000-0000-0000-000000000009", num:5,  emoji:"📖", title:"독서대",                             shop:"자유 선택",          note:"아무거나 OK!",                url:"",                                                                                                    img:"images/6-book-stand.JPG" },
   { id:"00000000-0000-0000-0000-000000000010", num:6,  emoji:"👜", title:"파우치 — 프롬디얼리던",               shop:"핫트랙스 교보문고",  note:"프롬디얼리던 상품 다 제 취향!", url:"https://hottracks.kyobobook.co.kr/gift/detail/S000219303542",                                         img:"images/7-fromdailyden-pouch.JPG" },
   { id:"00000000-0000-0000-0000-000000000011", num:7,  emoji:"🖥️", title:"데스크 매트",                        shop:"자유 선택",          note:"1만원대 아무거나!",           url:"",                                                                                                    img:"images/8-desk-mat.JPG" },
+  { id:"00000000-0000-0000-0000-000000000013", num:8,  emoji:"🪼", title:"다이소 해파리 세트",                  shop:"다이소",             note:"아무거나 OK!",                url:"",                                                                                                    img:"images/4-jellyfish.jpg" },
 ];
 
 let wlClaims = [];
 
 // app.js의 saveNickname을 덮어씀 (이 페이지에서는 wlLoad 호출)
-function saveNickname(){
+async function saveNickname(){
   const v = document.getElementById("nicknameInput").value.trim();
   if(!v){ alert("닉네임을 입력해줘! 💋"); return; }
+  const old = localStorage.getItem("barbie_nickname");
   localStorage.setItem("barbie_nickname", v);
   document.getElementById("nicknameModal").style.display = "none";
+  await propagateNicknameChange(old, v);
   updateNavNick();
   if(sb) wlLoad(); else renderWlGrid();
 }

@@ -279,7 +279,9 @@ a{color:inherit;text-decoration:none}
   display:flex;align-items:center;justify-content:center;
   font-family:"TmonMonsori",sans-serif;font-size:32px;letter-spacing:2px;
   color:#fff;font-weight:900;
+  white-space:nowrap;
   -webkit-text-stroke:2px var(--primary);
+  paint-order:stroke fill;
   text-shadow:3px 3px 0 var(--primary);
 }
 
