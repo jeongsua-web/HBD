@@ -157,6 +157,7 @@ create index if not exists idx_photos_created on photo_dump (created_at desc);
 alter table photo_dump enable row level security;
 create policy "photos_select" on photo_dump for select using (true);
 create policy "photos_insert" on photo_dump for insert with check (true);
+create policy "photos_delete" on photo_dump for delete using (true);
 
 alter publication supabase_realtime add table photo_dump;
 
@@ -171,5 +172,7 @@ create policy "storage_photos_insert" on storage.objects
   for insert with check (bucket_id = 'photos');
 create policy "storage_photos_select" on storage.objects
   for select using (bucket_id = 'photos');
+create policy "storage_photos_delete" on storage.objects
+  for delete using (bucket_id = 'photos');
 
 -- 완료! 🎉

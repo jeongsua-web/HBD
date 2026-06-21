@@ -428,6 +428,12 @@ a{color:inherit;text-decoration:none}
   color:var(--on-bg);transition:background .1s;
 }
 .photo-dl-btn:hover{background:var(--secondary-fixed)}
+.photo-del-btn{
+  background:none;border:var(--bd);padding:3px 6px;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;font-family:var(--f-pixel);font-size:9px;
+  color:#c2185b;transition:background .1s;
+}
+.photo-del-btn:hover{background:#ffd6e7}
 
 /* Lightbox */
 .photo-lightbox{

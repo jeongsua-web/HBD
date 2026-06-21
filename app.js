@@ -4,6 +4,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const isConfigured = SUPABASE_URL.startsWith("http") && SUPABASE_ANON_KEY.length > 20;
 const sb = isConfigured ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 const MAX_CLAIMS = 3;
+const ADMIN_NICK = "정수아";  // 이 닉네임일 때만 사진 삭제 버튼이 보인다 (UI 게이트)
 
 // ── 카운트다운 ────────────────────────────────────
 const TARGET = new Date("2026-06-30T17:00:00").getTime();
@@ -327,8 +328,27 @@ function addPhotoCard(photo){
       `<button class="photo-dl-btn" data-path="${escAttr(photo.file_path)}" data-name="${escAttr(photo.file_name)}" onclick="downloadPhoto(this.dataset.path,this.dataset.name)">` +
         `<span class="msym" style="font-size:12px">download</span>DL` +
       `</button>` +
+      (getNick() === ADMIN_NICK
+        ? `<button class="photo-del-btn" data-id="${escAttr(photo.id)}" data-path="${escAttr(photo.file_path)}" onclick="deletePhoto(this.dataset.id,this.dataset.path)">` +
+            `<span class="msym" style="font-size:12px">delete</span>` +
+          `</button>`
+        : ``) +
     `</div>`;
   grid.insertBefore(card, grid.firstChild);
+}
+
+// 관리자(ADMIN_NICK)만 호출되는 사진 삭제: 스토리지 파일 + DB 행 같이 삭제
+async function deletePhoto(id, filePath){
+  if(getNick() !== ADMIN_NICK) return;
+  if(!confirm("이 사진을 삭제할까요?")) return;
+  const {error:stErr} = await sb.storage.from("photos").remove([filePath]);
+  if(stErr){ console.error(stErr); alert("스토리지 삭제 실패 😢"); return; }
+  const {error:dbErr} = await sb.from("photo_dump").delete().eq("id", id);
+  if(dbErr){ console.error(dbErr); alert("삭제 실패 😢"); return; }
+  const btn = document.querySelector(`.photo-del-btn[data-id="${id}"]`);
+  const card = btn && btn.closest(".photo-card");
+  if(card) card.remove();
+  if(typeof updatePdBand === "function") updatePdBand();
 }
 
 // 업로드 전 이미지 압축: 최대 2048px로 리사이즈 + JPEG 품질 0.9
