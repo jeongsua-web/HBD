@@ -386,6 +386,57 @@ async function downloadPhoto(filePath, fileName){
   URL.revokeObjectURL(url);
 }
 
+// 사진 모두 저장: 모바일은 공유 시트로 앨범에 저장, 데스크톱은 ZIP 다운로드
+async function downloadAllPhotos(){
+  if(!sb) return;
+  const btn = document.getElementById("downloadAllBtn");
+  const origHtml = btn ? btn.innerHTML : "";
+  const setBtn = (txt, dis)=>{ if(btn){ btn.disabled = dis; btn.innerHTML = txt; } };
+
+  const {data,error} = await sb.from("photo_dump").select("*").order("created_at",{ascending:true});
+  if(error||!data||!data.length){ alert("저장할 사진이 없어요 🥲"); return; }
+
+  // 1) 모든 사진을 File 객체로 내려받기
+  const files = [];
+  for(let i=0;i<data.length;i++){
+    setBtn(`불러오는 중... (${i+1}/${data.length})`, true);
+    const {data:blob,error:dErr} = await sb.storage.from("photos").download(data[i].file_path);
+    if(dErr||!blob){ console.error(dErr); continue; }
+    const name = `sua_${String(i+1).padStart(3,"0")}_${data[i].file_name}`;
+    files.push(new File([blob], name, {type:blob.type||"image/jpeg"}));
+  }
+  if(!files.length){ alert("저장 실패 🥲"); setBtn(origHtml,false); return; }
+
+  // 2) 모바일: OS 공유 시트 → "이미지 저장"으로 앨범에 한 번에 저장
+  if(navigator.canShare && navigator.canShare({files})){
+    setBtn(origHtml,false);
+    try {
+      await navigator.share({ files, title:"수아 파티 사진 📸" });
+      return;
+    } catch(e){
+      if(e.name === "AbortError") return;       // 사용자가 취소
+      console.error("공유 실패, ZIP으로 대체:", e);
+    }
+  }
+
+  // 3) 데스크톱 등: ZIP으로 묶어 다운로드 (폴백)
+  setBtn("ZIP 만드는 중... 💾", true);
+  try {
+    const zip = new JSZip();
+    files.forEach(f=> zip.file(f.name, f));
+    const zipBlob = await zip.generateAsync({type:"blob"});
+    const url = URL.createObjectURL(zipBlob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `sua_party_photos_${new Date().toISOString().slice(0,10)}.zip`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch(e){
+    console.error(e); alert("저장 실패 🥲");
+  }
+  setBtn(origHtml,false);
+}
+
 function openPhotoLightbox(url){
   const overlay = document.createElement("div");
   overlay.className = "photo-lightbox";

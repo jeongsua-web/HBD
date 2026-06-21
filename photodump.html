@@ -124,6 +124,11 @@
         <div class="photo-progress-track"><div class="photo-progress-bar" id="photoProgressBar"></div></div>
         <span id="photoProgressText">업로드 중...</span>
       </div>
+      <div id="pdToolbar" style="display:none;justify-content:flex-end;margin-bottom:12px">
+        <button class="rbtn primary" id="downloadAllBtn" onclick="downloadAllPhotos()">
+          <span class="msym" style="font-size:14px">download</span> 사진 모두 저장 💾
+        </button>
+      </div>
       <div id="photoDumpGrid" class="photo-dump-grid">
         <div class="photo-dump-empty">사진을 불러오는 중... ✦</div>
       </div>
@@ -141,6 +146,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="app.js"></script>
 <script>
 window.onload = function(){
@@ -165,6 +171,8 @@ function updatePdBand(){
   document.getElementById("pdBand").textContent =
     count === 0 ? "아직 사진이 없어! 첫 번째로 올려봐 📸"
                 : `📸  사진 ${count}장 — 더 올려줘! 💖`;
+  const toolbar = document.getElementById("pdToolbar");
+  if(toolbar) toolbar.style.display = count > 0 ? "flex" : "none";
 }
 
 const _origLoadPhotoDump = window.loadPhotoDump;
