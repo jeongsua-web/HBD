@@ -1,5 +1,5 @@
-const SUPABASE_URL      = "YOUR_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL      = "https://kdwljcgqaostcdgalnht.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtkd2xqY2dxYW9zdGNkZ2Fsbmh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDEyMTAsImV4cCI6MjA5NzYxNzIxMH0.Icf3BeFbhuW1mknK-2eJxGDj0qrCuFwvj14Oyuhazr8";
 
 const isConfigured = SUPABASE_URL.startsWith("http") && SUPABASE_ANON_KEY.length > 20;
 const sb = isConfigured ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
@@ -55,10 +55,28 @@ function saveNickname(){
   localStorage.setItem("barbie_nickname", v);
   document.getElementById("nicknameModal").style.display="none";
   initUser(v);
+  updateNavNick();
   if(sb) loadWishlist();
 }
+
+// 닉네임 변경: 현재 닉네임을 채운 채로 입력 모달을 다시 띄움
+function changeNickname(){
+  const modal = document.getElementById("nicknameModal");
+  const input = document.getElementById("nicknameInput");
+  if(input) input.value = getNick() || "";
+  if(modal) modal.style.display = "flex";
+  if(input){ input.focus(); input.select(); }
+}
+
+// 네비바 버튼에 현재 닉네임 표시
+function updateNavNick(){
+  const el = document.getElementById("navNick");
+  if(el) el.textContent = getNick() || "닉네임";
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("nicknameInput").addEventListener("keydown", e => { if(e.key==="Enter") saveNickname(); });
+  updateNavNick();
 });
 
 function initUser(nick){
@@ -68,46 +86,85 @@ function initUser(nick){
   nd.style.display = "inline-block";
 }
 
-// ── 플레이어 ──────────────────────────────────────
-const TRACKS = ["","","",""];
+// ── 플레이어 (YouTube IFrame API) ─────────────────
+const TRACKS = [
+  { id:"TxZwCpgxttQ", title:"Speed Drive",    artist:"Charli XCX" },
+  { id:"hCLkVrp_4CE", title:"Dance The Night", artist:"Dua Lipa"   },
+];
 let curTrack = 0;
-const audio = document.getElementById("bgAudio");
+let ytPlayer = null;
+let ytReady  = false;
+let progTimer = null;
 
 const PLAY_ICON  = '<span class="msym" style="font-size:22px">play_circle</span>';
 const PAUSE_ICON = '<span class="msym" style="font-size:22px">pause_circle</span>';
 
-function playTrack(el, idx){
-  document.querySelectorAll(".pl li").forEach(li => li.classList.remove("active"));
-  el.classList.add("active");
-  curTrack = idx;
-  const titles = ["pink friday","barbie girl","levitating","supernova"];
-  document.getElementById("nowPlayingTitle").textContent = titles[idx] || "—";
-  if(TRACKS[idx]){
-    audio.src = TRACKS[idx];
-    audio.play();
-    document.getElementById("playBtn").innerHTML = PAUSE_ICON;
+// YouTube IFrame API 로드 완료 시 자동 호출 (전역)
+function onYouTubeIframeAPIReady(){
+  if(!document.getElementById("ytPlayer")) return;  // 플레이어 없는 페이지는 무시
+  ytPlayer = new YT.Player("ytPlayer", {
+    height:"180", width:"320",
+    playerVars:{ playsinline:1, controls:0, rel:0 },
+    events:{
+      onReady: () => { ytReady = true; },
+      onStateChange: onYtState
+    }
+  });
+}
+
+function onYtState(e){
+  const playBtn = document.getElementById("playBtn");
+  if(e.data === YT.PlayerState.PLAYING){
+    if(playBtn) playBtn.innerHTML = PAUSE_ICON;
+    startProg();
+  } else if(e.data === YT.PlayerState.PAUSED){
+    if(playBtn) playBtn.innerHTML = PLAY_ICON;
+    stopProg();
+  } else if(e.data === YT.PlayerState.ENDED){
+    nextTrack();
   }
 }
+
+function startProg(){
+  stopProg();
+  progTimer = setInterval(() => {
+    if(!ytPlayer || !ytPlayer.getDuration) return;
+    const dur = ytPlayer.getDuration();
+    if(!dur) return;
+    const bar = document.getElementById("playerBar");
+    if(bar) bar.style.width = (ytPlayer.getCurrentTime()/dur*100) + "%";
+  }, 500);
+}
+function stopProg(){ if(progTimer){ clearInterval(progTimer); progTimer = null; } }
+
+function setActiveTrack(idx){
+  const items = document.querySelectorAll(".pl li");
+  items.forEach(li => li.classList.remove("active"));
+  if(items[idx]) items[idx].classList.add("active");
+  curTrack = idx;
+  const titleEl = document.getElementById("nowPlayingTitle");
+  if(titleEl && TRACKS[idx]) titleEl.textContent = TRACKS[idx].title;
+}
+
+function playTrack(el, idx){
+  setActiveTrack(idx);
+  if(!ytReady || !ytPlayer) return;
+  ytPlayer.loadVideoById(TRACKS[idx].id);
+  ytPlayer.playVideo();
+}
 function togglePlay(){
-  if(!TRACKS[curTrack]) return;
-  if(audio.paused){ audio.play(); document.getElementById("playBtn").innerHTML = PAUSE_ICON; }
-  else { audio.pause(); document.getElementById("playBtn").innerHTML = PLAY_ICON; }
+  if(!ytReady || !ytPlayer) return;
+  const state = ytPlayer.getPlayerState();
+  if(state === YT.PlayerState.PLAYING){
+    ytPlayer.pauseVideo();
+  } else if(state === YT.PlayerState.PAUSED){
+    ytPlayer.playVideo();
+  } else {
+    playTrack(null, curTrack);   // 첫 재생: 현재 트랙 로드
+  }
 }
-function prevTrack(){
-  const items = document.querySelectorAll(".pl li");
-  curTrack = (curTrack - 1 + items.length) % items.length;
-  playTrack(items[curTrack], curTrack);
-}
-function nextTrack(){
-  const items = document.querySelectorAll(".pl li");
-  curTrack = (curTrack + 1) % items.length;
-  playTrack(items[curTrack], curTrack);
-}
-audio.addEventListener("ended", nextTrack);
-audio.addEventListener("timeupdate", () => {
-  if(!audio.duration) return;
-  document.getElementById("playerBar").style.width = (audio.currentTime/audio.duration*100)+"%";
-});
+function prevTrack(){ playTrack(null, (curTrack - 1 + TRACKS.length) % TRACKS.length); }
+function nextTrack(){ playTrack(null, (curTrack + 1) % TRACKS.length); }
 
 // ── 댓글 ──────────────────────────────────────────
 async function loadComments(){

@@ -41,18 +41,6 @@
   margin-bottom:12px;color:#8d6e00;
 }
 
-/* category filter */
-.cat-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
-.cat-btn{
-  font-family:var(--f-pixel);font-size:11px;border:var(--bd);
-  background:var(--surface);padding:5px 12px;cursor:pointer;
-  box-shadow:var(--sh-sm);transition:transform .1s,box-shadow .1s;
-  color:var(--on-bg);white-space:nowrap;
-}
-.cat-btn:hover{background:var(--secondary-container)}
-.cat-btn.active{background:var(--primary);color:var(--on-primary)}
-.cat-btn:active{transform:translate(2px,2px);box-shadow:none}
-
 /* grid */
 .wl-grid{
   display:grid;
@@ -73,31 +61,27 @@
 .wl-card-hd{
   border-bottom:var(--bd);padding:5px 10px;
   display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(90deg,#ffd8e8,#ffb3d0);
 }
-.wl-card-hd.beauty {background:linear-gradient(90deg,#ffd8e8,#ffb3d0)}
-.wl-card-hd.life   {background:linear-gradient(90deg,#bbdefb,#90caf9)}
-.wl-card-hd.book   {background:linear-gradient(90deg,#fff59d,#fffde7)}
-.wl-card-hd.fashion{background:linear-gradient(90deg,var(--secondary-container),var(--secondary-fixed))}
-.wl-card-hd.etc    {background:linear-gradient(90deg,#a3e8cf,#bbdefb)}
 .wl-card-num{font-family:var(--f-pixel);font-size:11px;font-weight:700}
-.wl-card-cat{
-  font-family:var(--f-pixel);font-size:9px;
-  background:rgba(255,255,255,.6);border:var(--bd-thin);
-  padding:2px 6px;color:var(--on-surface-variant);
-}
 
-/* emoji area */
+/* image / emoji area */
 .wl-card-img{
   width:100%;aspect-ratio:4/3;
   background:linear-gradient(135deg,#ffd8e8,#d5bffe 50%,#bbdefb);
   display:grid;place-items:center;font-size:56px;
-  border-bottom:var(--bd);position:relative;
+  border-bottom:var(--bd);position:relative;overflow:hidden;
 }
+.wl-card-img img{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.wl-card-img.has-img{background:#fff}
 .wl-card-img::after{
   content:"";position:absolute;inset:0;
   background:linear-gradient(180deg,rgba(255,255,255,.35),transparent 60%);
   pointer-events:none;
 }
+.wl-card-img.has-img::after{display:none}
 
 /* body */
 .wl-card-bd{padding:12px;display:flex;flex-direction:column;gap:5px;flex:1}
@@ -171,15 +155,10 @@
 <!-- ── BROWSER CHROME ───────────────────── -->
 <div class="bc">
   <div class="bc-l">
-    <div class="bc-dots">
-      <span class="bc-dot r"></span>
-      <span class="bc-dot y"></span>
-      <span class="bc-dot g"></span>
-    </div>
     <span class="bc-ttl">Wishlist · Sua's Pink Era</span>
   </div>
   <div class="bc-ctrls">
-    <span class="bc-ctrl">_</span>
+    <span class="bc-ctrl">-</span>
     <span class="bc-ctrl">□</span>
     <span class="bc-ctrl">×</span>
   </div>
@@ -195,6 +174,7 @@
 
     <a class="nav-link" href="photodump.html">Photo Dump</a>
   </div>
+  <button class="nav-nick" onclick="changeNickname()" title="닉네임 변경"><span class="msym" style="font-size:14px">edit</span><span id="navNick">닉네임</span></button>
 </nav>
 
 <!-- ── MAIN ──────────────────────────────── -->
@@ -204,14 +184,13 @@
   <div class="wl-hero">
     <span class="sticker" style="top:10px;left:5%;font-size:22px;animation-delay:.4s">✦</span>
     <span class="sticker" style="top:20px;right:6%;font-size:18px;animation-delay:1.1s">♡</span>
-    <div class="wl-kicker">✿ 수아의 위시리스트 · 06.29 ✿</div>
     <h1 class="wl-h1 holo-text">wishlist.dll</h1>
     <p class="wl-desc">찜하면 다른 친구 화면에 실시간 표시 → 선물 안 겹쳐요! 1인당 최대 3개 💖</p>
   </div>
 
   <!-- stats -->
   <div class="wl-stats">
-    <div class="wl-stat"><span class="wl-stat-val">11</span> 개 선물 목록</div>
+    <div class="wl-stat"><span class="wl-stat-val">7</span> 개 선물 목록</div>
     <div class="wl-stat"><span class="wl-stat-val" id="claimedCount">—</span> 개 찜 완료</div>
     <div class="wl-stat"><span class="wl-stat-val" id="myCount">—</span> / 3 내가 찜</div>
   </div>
@@ -219,16 +198,6 @@
   <!-- no supabase banner -->
   <div class="wl-banner" id="wlBanner">
     ⚙ Supabase 미설정 → 찜하기 기능 비활성화. 아이템은 미리 볼 수 있어요!
-  </div>
-
-  <!-- category filter -->
-  <div class="cat-filter">
-    <button class="cat-btn active" onclick="filterCat(this,'all')">✦ 전체</button>
-    <button class="cat-btn" onclick="filterCat(this,'뷰티')">💄 뷰티</button>
-    <button class="cat-btn" onclick="filterCat(this,'라이프')">🏠 라이프</button>
-    <button class="cat-btn" onclick="filterCat(this,'책')">📚 책</button>
-    <button class="cat-btn" onclick="filterCat(this,'패션')">👜 패션</button>
-    <button class="cat-btn" onclick="filterCat(this,'기타')">🎁 기타</button>
   </div>
 
   <!-- grid -->
@@ -251,23 +220,16 @@
 <script>
 // ── 아이템 정의 (wish_list.txt 기준, UUID는 supabase_setup.sql seed와 일치) ──
 const WISH_ITEMS = [
-  { id:"00000000-0000-0000-0000-000000000001", num:1,  emoji:"🎁", title:"위시",                               shop:"카카오 선물하기",     note:"",                           url:"https://gift.kakao.com/product/10343767",                                                              category:"기타"  },
-  { id:"00000000-0000-0000-0000-000000000002", num:2,  emoji:"✨", title:"넘버즈인 판토텐산 블러 파우더 7g",    shop:"넘버즈인",           note:"",                           url:"https://numbuzin.com/product/1번-판토텐산-스킨케어100-블러파우더-7g/135/category/100/display/1/",    category:"뷰티"  },
-  { id:"00000000-0000-0000-0000-000000000003", num:3,  emoji:"✈️", title:"여행용 목베개",                       shop:"네이버 스마트스토어", note:"아무거나 OK!",                url:"https://smartstore.naver.com/gtcare/products/12149502745",                                            category:"라이프" },
-  { id:"00000000-0000-0000-0000-000000000004", num:4,  emoji:"🌿", title:"러쉬 로션",                          shop:"카카오 선물하기",     note:"",                           url:"https://gift.kakao.com/product/12111299",                                                              category:"뷰티"  },
-  { id:"00000000-0000-0000-0000-000000000005", num:5,  emoji:"💆", title:"올라플렉스 헤어 퍼팩터",              shop:"올리브영",           note:"개비싸네 미친 😅",            url:"https://www.oliveyoung.co.kr/store/goods/getGoodsDetail.do?goodsNo=A000000185282",                  category:"뷰티"  },
-  { id:"00000000-0000-0000-0000-000000000006", num:6,  emoji:"🚿", title:"클로란 쿠푸아수 버터 리페어 샴푸",   shop:"올리브영",           note:"",                           url:"https://www.oliveyoung.co.kr/store/goods/getGoodsDetail.do?goodsNo=A000000157789",                  category:"뷰티"  },
-  { id:"00000000-0000-0000-0000-000000000007", num:7,  emoji:"💅", title:"네일팁",                             shop:"자유 선택 💖",       note:"수아 취향으로 골라줘!",       url:"",                                                                                                    category:"뷰티"  },
-  { id:"00000000-0000-0000-0000-000000000008", num:8,  emoji:"📚", title:"토지",                               shop:"교보문고",           note:"",                           url:"https://product.kyobobook.co.kr/detail/S000202594963",                                                category:"책"   },
-  { id:"00000000-0000-0000-0000-000000000009", num:9,  emoji:"📖", title:"독서대",                             shop:"자유 선택",          note:"아무거나 OK!",                url:"",                                                                                                    category:"라이프" },
-  { id:"00000000-0000-0000-0000-000000000010", num:10, emoji:"👜", title:"파우치 — 프롬디얼리던",               shop:"핫트랙스 교보문고",  note:"프롬디얼리던 상품 다 제 취향!", url:"https://hottracks.kyobobook.co.kr/gift/detail/S000219303542",                                         category:"패션"  },
-  { id:"00000000-0000-0000-0000-000000000011", num:11, emoji:"🖥️", title:"데스크 매트",                        shop:"자유 선택",          note:"1만원대 아무거나!",           url:"",                                                                                                    category:"라이프" },
+  { id:"00000000-0000-0000-0000-000000000002", num:1,  emoji:"✨", title:"넘버즈인 판토텐산 블러 파우더 7g",    shop:"넘버즈인",           note:"",                           url:"https://numbuzin.com/product/1번-판토텐산-스킨케어100-블러파우더-7g/135/category/100/display/1/",    img:"images/1-numbuzin-powder.JPG" },
+  { id:"00000000-0000-0000-0000-000000000003", num:2,  emoji:"✈️", title:"여행용 목베개",                       shop:"네이버 스마트스토어", note:"아무거나 OK!",                url:"https://smartstore.naver.com/gtcare/products/12149502745",                                            img:"images/2-neck-pillow.JPG" },
+  { id:"00000000-0000-0000-0000-000000000012", num:3,  emoji:"🧺", title:"수건",                               shop:"자유 선택",          note:"아무거나 OK!",                url:"",                                                                                                    img:"images/3-towell.JPG" },
+  { id:"00000000-0000-0000-0000-000000000008", num:4,  emoji:"📚", title:"토지",                               shop:"교보문고",           note:"",                           url:"https://product.kyobobook.co.kr/detail/S000202594963",                                                img:"images/5-toji-book.JPG" },
+  { id:"00000000-0000-0000-0000-000000000009", num:5,  emoji:"📖", title:"독서대",                             shop:"자유 선택",          note:"아무거나 OK!",                url:"",                                                                                                    img:"images/6-book-stand.JPG" },
+  { id:"00000000-0000-0000-0000-000000000010", num:6,  emoji:"👜", title:"파우치 — 프롬디얼리던",               shop:"핫트랙스 교보문고",  note:"프롬디얼리던 상품 다 제 취향!", url:"https://hottracks.kyobobook.co.kr/gift/detail/S000219303542",                                         img:"images/7-fromdailyden-pouch.JPG" },
+  { id:"00000000-0000-0000-0000-000000000011", num:7,  emoji:"🖥️", title:"데스크 매트",                        shop:"자유 선택",          note:"1만원대 아무거나!",           url:"",                                                                                                    img:"images/8-desk-mat.JPG" },
 ];
 
-const CAT_CSS = { 뷰티:"beauty", 라이프:"life", 책:"book", 패션:"fashion", 기타:"etc" };
-
 let wlClaims = [];
-let wlCat    = "all";
 
 // app.js의 saveNickname을 덮어씀 (이 페이지에서는 wlLoad 호출)
 function saveNickname(){
@@ -275,14 +237,8 @@ function saveNickname(){
   if(!v){ alert("닉네임을 입력해줘! 💋"); return; }
   localStorage.setItem("barbie_nickname", v);
   document.getElementById("nicknameModal").style.display = "none";
+  updateNavNick();
   if(sb) wlLoad(); else renderWlGrid();
-}
-
-function filterCat(btn, cat){
-  document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  wlCat = cat;
-  renderWlGrid();
 }
 
 function renderWlGrid(){
@@ -294,11 +250,11 @@ function renderWlGrid(){
   document.getElementById("claimedCount").textContent = sb ? Object.keys(claimMap).length : "—";
   document.getElementById("myCount").textContent      = sb ? myCount : "—";
 
-  const items = wlCat === "all" ? WISH_ITEMS : WISH_ITEMS.filter(i => i.category === wlCat);
+  const items = WISH_ITEMS;
   const grid  = document.getElementById("wlGrid");
 
   if(items.length === 0){
-    grid.innerHTML = `<div class="wish-empty">해당 카테고리 아이템 없음 🥲</div>`;
+    grid.innerHTML = `<div class="wish-empty">아이템 없음 🥲</div>`;
     return;
   }
 
@@ -307,7 +263,6 @@ function renderWlGrid(){
     const isMine   = claim && claim.nickname === myNick;
     const isClaimed = !!claim;
     const full     = myCount >= MAX_CLAIMS;
-    const catCss   = CAT_CSS[item.category] || "etc";
 
     let actHtml = "";
     if(sb){
@@ -321,11 +276,10 @@ function renderWlGrid(){
 
     return `
     <div class="wl-card${isClaimed?" claimed":""}">
-      <div class="wl-card-hd ${catCss}">
+      <div class="wl-card-hd">
         <span class="wl-card-num">No.${String(item.num).padStart(2,"0")}</span>
-        <span class="wl-card-cat">${item.category}</span>
       </div>
-      <div class="wl-card-img">${item.emoji}</div>
+      <div class="wl-card-img${item.img?" has-img":""}">${item.img ? `<img src="${esc(item.img)}" alt="${esc(item.title)}" loading="lazy" onerror="this.parentNode.classList.remove('has-img');this.parentNode.textContent='${item.emoji}'">` : item.emoji}</div>
       <div class="wl-card-bd">
         <div class="wl-card-title">${esc(item.title)}</div>
         <div class="wl-card-shop"><span class="msym" style="font-size:12px">storefront</span> ${esc(item.shop)}</div>

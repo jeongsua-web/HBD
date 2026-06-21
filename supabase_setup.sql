@@ -105,17 +105,13 @@ alter publication supabase_realtime add table wishlist_claims;
 --    on conflict do nothing → 중복 실행 안전
 -- ----------------------------------------------------
 insert into wishlist_items (id, title, link_url, sort_order) values
-  ('00000000-0000-0000-0000-000000000001', '위시',                             'https://gift.kakao.com/product/10343767',                                                                            1),
-  ('00000000-0000-0000-0000-000000000002', '넘버즈인 판토텐산 블러 파우더 7g', 'https://numbuzin.com/product/1번-판토텐산-스킨케어100-블러파우더-7g/135/category/100/display/1/',                    2),
-  ('00000000-0000-0000-0000-000000000003', '여행용 목베개',                    'https://smartstore.naver.com/gtcare/products/12149502745',                                                           3),
-  ('00000000-0000-0000-0000-000000000004', '러쉬 로션',                        'https://gift.kakao.com/product/12111299',                                                                            4),
-  ('00000000-0000-0000-0000-000000000005', '올라플렉스 헤어 퍼팩터',            'https://www.oliveyoung.co.kr/store/goods/getGoodsDetail.do?goodsNo=A000000185282',                                  5),
-  ('00000000-0000-0000-0000-000000000006', '클로란 쿠푸아수 버터 리페어 샴푸', 'https://www.oliveyoung.co.kr/store/goods/getGoodsDetail.do?goodsNo=A000000157789',                                  6),
-  ('00000000-0000-0000-0000-000000000007', '네일팁',                           null,                                                                                                                 7),
-  ('00000000-0000-0000-0000-000000000008', '토지',                             'https://product.kyobobook.co.kr/detail/S000202594963',                                                               8),
-  ('00000000-0000-0000-0000-000000000009', '독서대',                           null,                                                                                                                 9),
-  ('00000000-0000-0000-0000-000000000010', '파우치 — 프롬디얼리던',             'https://hottracks.kyobobook.co.kr/gift/detail/S000219303542',                                                        10),
-  ('00000000-0000-0000-0000-000000000011', '데스크 매트',                      null,                                                                                                                 11)
+  ('00000000-0000-0000-0000-000000000002', '넘버즈인 판토텐산 블러 파우더 7g', 'https://numbuzin.com/product/1번-판토텐산-스킨케어100-블러파우더-7g/135/category/100/display/1/',                    1),
+  ('00000000-0000-0000-0000-000000000003', '여행용 목베개',                    'https://smartstore.naver.com/gtcare/products/12149502745',                                                           2),
+  ('00000000-0000-0000-0000-000000000012', '수건',                             null,                                                                                                                 3),
+  ('00000000-0000-0000-0000-000000000008', '토지',                             'https://product.kyobobook.co.kr/detail/S000202594963',                                                               4),
+  ('00000000-0000-0000-0000-000000000009', '독서대',                           null,                                                                                                                 5),
+  ('00000000-0000-0000-0000-000000000010', '파우치 — 프롬디얼리던',             'https://hottracks.kyobobook.co.kr/gift/detail/S000219303542',                                                        6),
+  ('00000000-0000-0000-0000-000000000011', '데스크 매트',                      null,                                                                                                                 7)
 on conflict (id) do nothing;
 
 -- ----------------------------------------------------
@@ -140,18 +136,9 @@ create policy "attendees_delete" on attendees for delete using (true);
 -- Realtime
 alter publication supabase_realtime add table attendees;
 
--- 참석자 시드 (가나다 순) — on conflict do nothing → 중복 실행 안전
-insert into attendees (nickname) values
-  ('김은우'),
-  ('김희재'),
-  ('남다현'),
-  ('이다은'),
-  ('이채은'),
-  ('장서은'),
-  ('최은서'),
-  ('최이아름'),
-  ('허보윤')
-on conflict (nickname) do nothing;
+-- ⚠️ 참석자 시드 없음 — Who's In?은 각자 "참석 확정" 버튼을 눌러야
+--    명단에 올라가는 opt-in RSVP 기능이다. 미리 채워두면 아무도 누르지 않았는데도
+--    전원이 확정 명단에 떠버리므로 시드하지 않는다. (초대 명단 ≠ 참석 확정 명단)
 
 -- ----------------------------------------------------
 -- 7) 포토덤프 (Photo Dump)

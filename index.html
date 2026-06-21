@@ -50,6 +50,7 @@
 
     <a class="nav-link" href="photodump.html">Photo Dump</a>
   </div>
+  <button class="nav-nick" onclick="changeNickname()" title="닉네임 변경"><span class="msym" style="font-size:14px">edit</span><span id="navNick">닉네임</span></button>
 </nav>
 
 <!-- ── HERO ─────────────────────────────── -->
@@ -66,12 +67,10 @@
       <div class="welcome-box">
         <h3>Welcome!💖</h3>
         <p>와줘서 진심으로 고마워! 수아의 생일을 같이 축하해줘서 넘 행복해 🩷<br><br>공지 확인하고, 한마디 남겨줘!</p>
-        <span class="welcome-tag">✿ 06.29 YOU ARE INVITED ✿</span>
       </div>
 
       <!-- 2. title -->
       <div class="hero-title">
-        <div class="hero-kicker">✿ 06.29 (MON) · GIRLS NIGHT PARTY ✿</div>
         <h1 class="hero-h1 holo-text">Enter:<br>Sua's Pink Era</h1>
         <div class="hero-sub">"On June 29th, we wear PINK!"</div>
         <div id="nickDisplay" class="nick-display"></div>
@@ -84,8 +83,8 @@
           <div class="rw-controls"><div class="wbtn"></div><div class="wbtn x">x</div></div>
         </div>
         <div class="photo-body">
-          <img id="heroPhoto" src="" alt="Sua" onerror="this.style.display='none';document.getElementById('photoPh').style.display='flex'">
-          <div id="photoPh" class="photo-ph" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+          <img id="heroPhoto" src="images/sua_photo.JPG" alt="Sua" onerror="this.style.display='none';document.getElementById('photoPh').style.display='flex'">
+          <div id="photoPh" class="photo-ph" style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:6px">
             <span class="msym" style="font-size:36px;color:#d5bffe">photo_camera</span>
             <span>sua_photo.jpg<br>여기에 사진 삽입</span>
           </div>
@@ -102,13 +101,11 @@
           <div class="player-body">
             <div class="player-track">
               <div class="player-album"><span class="msym" style="font-size:22px">album</span></div>
-              <div class="player-info"><strong id="nowPlayingTitle">pink friday</strong><br>party playlist</div>
+              <div class="player-info"><strong id="nowPlayingTitle">Speed Drive</strong><br>barbie party playlist</div>
             </div>
             <ul class="pl" id="playlist">
-              <li class="active" data-src="" onclick="playTrack(this,0)"><span>01 pink friday</span><span>3:22</span></li>
-              <li data-src="" onclick="playTrack(this,1)"><span>02 barbie girl</span><span>3:15</span></li>
-              <li data-src="" onclick="playTrack(this,2)"><span>03 levitating</span><span>3:23</span></li>
-              <li data-src="" onclick="playTrack(this,3)"><span>04 supernova</span><span>2:55</span></li>
+              <li class="active" onclick="playTrack(this,0)"><span>01 Speed Drive · Charli XCX</span><span>2:27</span></li>
+              <li onclick="playTrack(this,1)"><span>02 Dance The Night · Dua Lipa</span><span>2:56</span></li>
             </ul>
             <div class="player-progress" style="margin-top:8px"><div class="player-bar" id="playerBar"></div></div>
             <div class="player-ctrl-row">
@@ -116,7 +113,7 @@
               <button class="pbtn play" id="playBtn" onclick="togglePlay()"><span class="msym" style="font-size:22px">play_circle</span></button>
               <button class="pbtn" onclick="nextTrack()"><span class="msym" style="font-size:20px">skip_next</span></button>
             </div>
-            <audio id="bgAudio"></audio>
+            <div style="position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden"><div id="ytPlayer"></div></div>
           </div>
         </div>
       </div>
@@ -204,5 +201,6 @@
 <!-- ── SUPABASE + JS ─────────────────────── -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="app.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
