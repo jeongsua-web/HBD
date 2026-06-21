@@ -329,6 +329,14 @@ function compressImage(file, maxSize=2048, quality=0.9){
   });
 }
 
+// 원본 내용의 SHA-256 해시(16진). 같은 사진이면 같은 값 → 중복 판별용
+async function hashFile(file){
+  if(!crypto.subtle) return null;   // 보안 컨텍스트(HTTPS)에서만 사용 가능
+  const buf = await file.arrayBuffer();
+  const digest = await crypto.subtle.digest("SHA-256", buf);
+  return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+
 async function handlePhotoUpload(files){
   const nick = getNick();
   if(!nick){ alert("닉네임 설정이 필요해! 💋"); return; }
@@ -345,9 +353,13 @@ async function handlePhotoUpload(files){
   progress.style.display = "flex";
   let done = 0;
 
+  let skipped = 0;
   for(const file of validFiles){
     text.textContent = `${file.name} 처리 중... (${done+1}/${validFiles.length})`;
     bar.style.width = `${Math.round(done/validFiles.length*100)}%`;
+
+    // 원본 내용 해시를 경로로 사용 → 같은 사진이면 같은 경로 = 중복 차단
+    const hash = await hashFile(file);
 
     // 압축(2048px / 품질 0.9). 실패하면 원본 그대로 업로드
     let blob = file, name = file.name, ctype = file.type;
@@ -358,12 +370,18 @@ async function handlePhotoUpload(files){
     } catch(e){ console.error("압축 실패, 원본 업로드:", e); }
 
     const ext = name.split(".").pop().toLowerCase();
-    const path = `${crypto.randomUUID()}.${ext}`;
+    const path = `${hash || crypto.randomUUID()}.${ext}`;
 
     const {error:stErr} = await sb.storage.from("photos").upload(path, blob, {
       cacheControl:"3600", upsert:false, contentType:ctype
     });
-    if(stErr){ console.error(stErr); alert(`${file.name} 업로드 실패 🥲`); continue; }
+    if(stErr){
+      // 이미 같은 사진이 올라와 있으면(경로 중복) 조용히 건너뜀
+      if(stErr.statusCode==="409" || stErr.statusCode===409 || stErr.status===409 || /exist|duplicate/i.test(stErr.message||"")){
+        skipped++; continue;
+      }
+      console.error(stErr); alert(`${file.name} 업로드 실패 🥲`); continue;
+    }
 
     const {error:dbErr} = await sb.from("photo_dump").insert({nickname:nick, file_path:path, file_name:name});
     if(dbErr) console.error(dbErr);
@@ -371,7 +389,7 @@ async function handlePhotoUpload(files){
   }
 
   bar.style.width = "100%";
-  text.textContent = `${done}개 완료! 💖`;
+  text.textContent = skipped>0 ? `${done}개 완료! (중복 ${skipped}개 건너뜀) 💖` : `${done}개 완료! 💖`;
   setTimeout(()=>{ progress.style.display="none"; bar.style.width="0%"; }, 2000);
   document.getElementById("photoFileInput").value = "";
 }
@@ -387,16 +405,30 @@ async function downloadPhoto(filePath, fileName){
 }
 
 // 사진 모두 저장: 모바일은 공유 시트로 앨범에 저장, 데스크톱은 ZIP 다운로드
+let _photosForSave = null;   // 1차 탭에서 받아둔 사진(2차 탭에서 공유)
+
 async function downloadAllPhotos(){
   if(!sb) return;
   const btn = document.getElementById("downloadAllBtn");
-  const origHtml = btn ? btn.innerHTML : "";
   const setBtn = (txt, dis)=>{ if(btn){ btn.disabled = dis; btn.innerHTML = txt; } };
+  const resetBtn = ()=> setBtn('<span class="msym" style="font-size:14px">download</span> 사진 모두 저장 💾', false);
 
+  // 2단계: 받아둔 사진이 있으면 '이 탭'(유효한 사용자 제스처)으로 바로 공유 → 앨범 저장
+  if(_photosForSave){
+    const files = _photosForSave;
+    _photosForSave = null;
+    try {
+      await navigator.share({ files, title:"수아 파티 사진 📸" });
+    } catch(e){
+      if(e.name !== "AbortError"){ console.error("공유 실패, ZIP으로 대체:", e); await zipDownload(files); }
+    }
+    resetBtn();
+    return;
+  }
+
+  // 1단계: 모든 사진을 File 객체로 내려받기
   const {data,error} = await sb.from("photo_dump").select("*").order("created_at",{ascending:true});
   if(error||!data||!data.length){ alert("저장할 사진이 없어요 🥲"); return; }
-
-  // 1) 모든 사진을 File 객체로 내려받기
   const files = [];
   for(let i=0;i<data.length;i++){
     setBtn(`불러오는 중... (${i+1}/${data.length})`, true);
@@ -405,22 +437,23 @@ async function downloadAllPhotos(){
     const name = `sua_${String(i+1).padStart(3,"0")}_${data[i].file_name}`;
     files.push(new File([blob], name, {type:blob.type||"image/jpeg"}));
   }
-  if(!files.length){ alert("저장 실패 🥲"); setBtn(origHtml,false); return; }
+  if(!files.length){ alert("저장 실패 🥲"); resetBtn(); return; }
 
-  // 2) 모바일: OS 공유 시트 → "이미지 저장"으로 앨범에 한 번에 저장
+  // 공유 지원(주로 모바일): 다운로드 중 사용자 제스처가 만료되므로, 한 번 더
+  // 탭하게 해서 '그 탭'으로 공유 시트를 띄운다(앨범에 한 번에 저장 가능)
   if(navigator.canShare && navigator.canShare({files})){
-    setBtn(origHtml,false);
-    try {
-      await navigator.share({ files, title:"수아 파티 사진 📸" });
-      return;
-    } catch(e){
-      if(e.name === "AbortError") return;       // 사용자가 취소
-      console.error("공유 실패, ZIP으로 대체:", e);
-    }
+    _photosForSave = files;
+    setBtn("📲 한 번 더 눌러 앨범에 저장!", false);
+    return;
   }
 
-  // 3) 데스크톱 등: ZIP으로 묶어 다운로드 (폴백)
+  // 데스크톱 등: 바로 ZIP 다운로드
   setBtn("ZIP 만드는 중... 💾", true);
+  await zipDownload(files);
+  resetBtn();
+}
+
+async function zipDownload(files){
   try {
     const zip = new JSZip();
     files.forEach(f=> zip.file(f.name, f));
@@ -434,7 +467,6 @@ async function downloadAllPhotos(){
   } catch(e){
     console.error(e); alert("저장 실패 🥲");
   }
-  setBtn(origHtml,false);
 }
 
 function openPhotoLightbox(url){
