@@ -448,7 +448,7 @@ a{color:inherit;text-decoration:none}
       "dress   timer"
       "sticky  sticky";
   }
-  .timer-vert{font-size:13px}
+  .timer-vert{font-size:18px;letter-spacing:1px;-webkit-text-stroke:1px var(--primary);text-shadow:2px 2px 0 var(--primary)}
   .notice-list{grid-template-columns:1fr 1fr}
   .content-grid{grid-template-columns:1fr}
   .content-grid #notice{grid-column:auto}
@@ -465,7 +465,7 @@ a{color:inherit;text-decoration:none}
       "timer"
       "sticky";
   }
-  .timer-vert{font-size:13px}
+  .timer-vert{font-size:26px;letter-spacing:1px;-webkit-text-stroke:1px var(--primary);text-shadow:2px 2px 0 var(--primary)}
   .notice-list{grid-template-columns:1fr}
   .hero-h1{font-size:clamp(36px,12vw,56px)}
   .nav-link{padding:9px 10px;font-size:11px}
