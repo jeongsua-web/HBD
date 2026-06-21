@@ -68,10 +68,11 @@ function changeNickname(){
   if(input){ input.focus(); input.select(); }
 }
 
-// 네비바 버튼에 현재 닉네임 표시
+// 네비바 변경 버튼에 현재 닉네임을 괄호로 표시
 function updateNavNick(){
   const el = document.getElementById("navNick");
-  if(el) el.textContent = getNick() || "닉네임";
+  const nick = getNick();
+  if(el) el.textContent = nick ? ` (${nick})` : "";
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -306,6 +307,28 @@ function addPhotoCard(photo){
   grid.insertBefore(card, grid.firstChild);
 }
 
+// 업로드 전 이미지 압축: 최대 2048px로 리사이즈 + JPEG 품질 0.9
+function compressImage(file, maxSize=2048, quality=0.9){
+  return new Promise((resolve,reject)=>{
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = ()=>{
+      URL.revokeObjectURL(url);
+      let {width,height} = img;
+      if(width > maxSize || height > maxSize){
+        if(width >= height){ height = Math.round(height*maxSize/width); width = maxSize; }
+        else { width = Math.round(width*maxSize/height); height = maxSize; }
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width; canvas.height = height;
+      canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+      canvas.toBlob(b=> b ? resolve(b) : reject(new Error("toBlob failed")), "image/jpeg", quality);
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); reject(new Error("image load failed")); };
+    img.src = url;
+  });
+}
+
 async function handlePhotoUpload(files){
   const nick = getNick();
   if(!nick){ alert("닉네임 설정이 필요해! 💋"); return; }
@@ -323,17 +346,26 @@ async function handlePhotoUpload(files){
   let done = 0;
 
   for(const file of validFiles){
-    const ext = file.name.split(".").pop().toLowerCase();
-    const path = `${crypto.randomUUID()}.${ext}`;
-    text.textContent = `${file.name} 업로드 중... (${done+1}/${validFiles.length})`;
+    text.textContent = `${file.name} 처리 중... (${done+1}/${validFiles.length})`;
     bar.style.width = `${Math.round(done/validFiles.length*100)}%`;
 
-    const {error:stErr} = await sb.storage.from("photos").upload(path, file, {
-      cacheControl:"3600", upsert:false, contentType:file.type
+    // 압축(2048px / 품질 0.9). 실패하면 원본 그대로 업로드
+    let blob = file, name = file.name, ctype = file.type;
+    try {
+      blob = await compressImage(file, 2048, 0.9);
+      name = file.name.replace(/\.[^.]+$/, "") + ".jpg";
+      ctype = "image/jpeg";
+    } catch(e){ console.error("압축 실패, 원본 업로드:", e); }
+
+    const ext = name.split(".").pop().toLowerCase();
+    const path = `${crypto.randomUUID()}.${ext}`;
+
+    const {error:stErr} = await sb.storage.from("photos").upload(path, blob, {
+      cacheControl:"3600", upsert:false, contentType:ctype
     });
     if(stErr){ console.error(stErr); alert(`${file.name} 업로드 실패 🥲`); continue; }
 
-    const {error:dbErr} = await sb.from("photo_dump").insert({nickname:nick, file_path:path, file_name:file.name});
+    const {error:dbErr} = await sb.from("photo_dump").insert({nickname:nick, file_path:path, file_name:name});
     if(dbErr) console.error(dbErr);
     done++;
   }
